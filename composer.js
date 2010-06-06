@@ -330,13 +330,16 @@
     };
 
     zen.cleanUpWebpage = function () {
-	canvas = dojo.byId("canvasDiv");
+	var diagramPaneCompon = dijit.byId("diagramPane");
+	var canvas = dojo.byId("diagramPane");
 	console.debug("*** Cleaning up the canvas");
-	canvasDivCompon = createNew(zen.DomNodeCompon,
-				    dojo.byId("canvasDiv"));
-	var compons = canvasDivCompon.getChildCompons();
+	if (!diagramPaneCompon) {
+	    diagramPaneCompon = createNew(zen.DomNodeCompon,
+					  dojo.byId("diagramPane"));
+	}
+	var compons = diagramPaneCompon.getChildCompons();
 	console.debug("compons => " + compons);
-	dojo.forEach(canvasDivCompon.getChildCompons(),
+	dojo.forEach(diagramPaneCompon.getChildCompons(),
 		     function(child) {
 			 child.destroy();
 		     });
