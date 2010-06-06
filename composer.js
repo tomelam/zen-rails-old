@@ -330,44 +330,17 @@
     };
 
     zen.cleanUpWebpage = function () {
-	var node = dojo.byId("workingNode"), nextNode, p;
-	var widget;
-	console.debug("cleaning up the working node");
-	console.debug("node.childNodes.length = ", node.childNodes.length);
-	node = node.firstChild;
-	while (node) {
-	    if (node.parentNode) {
-		nextNode = node.parentNode.nextSibling;
-	    } else {
-		nextNode = null;
-	    }
-	    console.debug("node = ", node);
-	    console.debug("dijit.byNode = ", dijit.byNode);
-	    console.debug("test if widget");
-	    if (node.getAttribute) {
-		widget = dijit.byNode(node);
-		if (widget) {
-		    console.debug("widget");
-		    dijit.destroyRecursive(widget);
-		    console.debug("deleted widget");
-		} else {
-		    console.debug("has node.getAttribute, but is not widget");
-		    oldNode = node;
-		    p = node.parentNode;
-		    p.removeChild(node);
-		    console.debug("deleted node");
-		}
-	    } else {
-		console.debug("node");
-		//dojo.destroyRecursive(node);
-		//dojo.query(node).orphan();
-		p = node.parentNode;
-		p.removeChild(node);
-		console.debug("deleted node");
-	    }
-	    node = nextNode;
-	}
-	console.debug("exiting");
+	canvas = dojo.byId("canvasDiv");
+	console.debug("*** Cleaning up the canvas");
+	canvasDivCompon = createNew(zen.DomNodeCompon,
+				    dojo.byId("canvasDiv"));
+	var compons = canvasDivCompon.getChildCompons();
+	console.debug("compons => " + compons);
+	dojo.forEach(canvasDivCompon.getChildCompons(),
+		     function(child) {
+			 child.destroy();
+		     });
+	console.debug("*** Exiting cleanup");
     };
 
     zen.getCurrentConfig = function () {
