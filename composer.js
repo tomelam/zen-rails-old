@@ -329,23 +329,6 @@
 	}
     };
 
-    zen.cleanUpWebpage = function () {
-	var diagramPaneCompon = dijit.byId("diagramPane");
-	var canvas = dojo.byId("diagramPane");
-	console.debug("*** Cleaning up the canvas");
-	if (!diagramPaneCompon) {
-	    diagramPaneCompon = createNew(zen.DomNodeCompon,
-					  dojo.byId("diagramPane"));
-	}
-	var compons = diagramPaneCompon.getChildCompons();
-	console.debug("compons => " + compons);
-	dojo.forEach(diagramPaneCompon.getChildCompons(),
-		     function(child) {
-			 child.destroy();
-		     });
-	console.debug("*** Exiting cleanup");
-    };
-
     zen.getCurrentConfig = function () {
 	//zen.debug.debug('in getCurrentConfig');
 	//zen.debug.debug('dojo.byId("txt") => ' + dojo.byId('txt')); //FIXME: Doesn't this work?
