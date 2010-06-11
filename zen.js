@@ -2,9 +2,84 @@ var zen = {};
 
 
 ////
+//// CONSTRUCTORS
+////
+//FIXME: widgets have not been defined in terms of a Zen constructor.
+zen.Tree = function() {
+    this.rootCompon = null;
+    this.treeCompons = []; // List of zen.TreeCompons.
+}
+
+//FIXME: Must the zen.TreeCompons class know about widgets & DOM nodes?
+//
+//FIXME: See http://higginsforpresident.net/2010/01/widgets-within-widgets/
+zen.TreeCompons = function() {
+    this.domNodeCompons = []; // List of zen.DomNodeCompons.
+    this.widgets = [];
+    this.pushCompon = function(component) {
+	if (component.isDojoWidget) {
+	    this.widgets.push(component);
+	} else {
+	    this.domNodeCompons.push(component);
+	};
+    };
+};
+
+zen.DomNodeCompon = function(element) {
+    this.domNode = element;
+    this.stringRep = "[zen.DomNodeCompon " + this.domNode + "]";
+    this.children = [];
+    this.toString = function () { // Without this, we get '[object Object]'.
+	return "[zen.DomNodeCompon " +
+	    String(this.domNode).replace(/^\[object /,"").replace(/\]$/,"") +
+	    "]";
+    };
+    this.appendMyselfToParent = function (parent) {
+	if(d>4)zen.debug("* DomNodeCompon.appendMyselfToParent: domNode => " +
+			 this.domNode + ", parent => " + parent);
+	parent.appendChild(this);
+    };
+    this.appendChild = function (child) {
+	if(d>4)zen.debug("* DomNodeCompon.appendChild: child => " +
+			 child + ", this => " + this);
+	this.domNode.appendChild(child.getDomNode());
+	this.children.push(child);
+    };
+    this.getDomNode = function () {
+	if(d>4)zen.debug("* DomNodeCompon.getDomNode: domNode => " +
+			 this.domNode);
+	return this.domNode;
+    };
+    this.getChildCompons = function () { //FIXME: WORKING ON THIS: WAS BROKEN!
+	return this.children;
+	var domNode = this.domNode;
+	if(d>4)zen.debug("* zen.DomNodeCompon.getChildCompons: domNode => " +
+			 domNode);
+	return dojo.map(domNode.children,
+			function(c) {
+			    var w = dijit.byNode(c);
+			    //return w || c;
+			    return w ||
+				zen.DomNodeCompon.fromDomNode(c);
+			});
+    };
+    this.destroyCompon = function() {
+	var compon, index;
+	if(d>4)zen.debug("* zen.DomNodeCompon.destroyCompon: this => " + this +
+			 ", domNode => " + this.domNode);
+	dojo.forEach(this.getChildCompons(),
+		     function(child) {
+			 child.destroyCompon();
+		     });
+	dojo.destroy(this.domNode);
+    };
+}
+
+
+////
 //// DEBUGGING FACILITIES
 ////
-//// Debug Levels, by Convention
+//// Debug Levels, by Convention Only
 //// 0 = off
 //// 1 = group, groupEnd, dir (maybe these should be 5)
 //// 2 = error
@@ -13,7 +88,7 @@ var zen = {};
 //// 5 = debug
 //// 6 = log
 //zen.debugLevel = 0; // Off.
-var d = 5; // Off.
+var d = 0; // Off.
 zen.log = console.log;
 zen.debug = console.debug;
 zen.info = console.info;
@@ -22,86 +97,6 @@ zen.error = console.error;
 zen.group = console.group;
 zen.groupEnd = console.groupEnd;
 zen.dir = console.dir;
-
-
-/*
-////FIXME: Create these functions programmatically to save code.
-// For verbose logging: log everything, virtually all activity.
-zen.log = function() {
-    if (zen.debugLevel > 5) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.log.apply(null, args);
-    };
-};
-
-// For detailed debugging.
-zen.debug = function() {
-    if (zen.debugLevel > 4) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.debug.apply(null, args);
-    };
-};
-
-// Useful information.
-zen.info = function() {
-    if (zen.debugLevel > 3) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.info.apply(null, args); 
-   };
-};
-
-// We should keep an eye on any messages this prints.
-zen.warn = function() {
-    if (zen.debugLevel > 2) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.warn.apply(null, args);
-    };
-};
-
-// Something is definitely wrong if these messages are printed.
-zen.error = function() {
-    if (zen.debugLevel > 1) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.error.apply(null, args);
-    };
-};
-
-zen.group = function() {
-    if (zen.debugLevel > 0) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.group.apply(null, args);
-    };
-};
-
-zen.groupEnd = function() {
-    if (zen.debugLevel > 0) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.groupEnd.apply(null, args);
-    };
-};
-
-zen.dir = function() {
-    if (zen.debugLevel > 0) {
-	var args = Array.prototype.slice.call(arguments); // Get a real array.
-	console.dir.apply(null, args);
-    };
-};
-*/
-
-
-////
-//// CONSTRUCTORS
-////
-zen.TreeCompons = function() {
-    this.domNodeCompons = [];
-    this.widgets = [];
-};
-
-//FIXME: widgets have not been defined in terms of a Zen constructor.
-zen.Tree = function() {
-    this.topCompon = null;
-    this.treeCompons = [];
-}
 
 
 ////
@@ -120,72 +115,22 @@ zen.walkZen = function(compon, func) {
 ////
 //// DOM NODE HANDLING
 ////
-zen.DomNodeCompon = function(element) {
-    this.domNode = element;
-    this.stringRep = "[zen.DomNodeCompon " + this.domNode + "]";
-    this.children = [];
-    this.toString = function () { // Without this, we get '[object Object]'.
-	//return "[zen.DomNodeCompon " + this.domNode + "]";
-	return "[zen.DomNodeCompon " +
-	    String(this.domNode).replace(/^\[object /,"").replace(/\]$/,"") +
-	    "]";
-    };
-    this.appendMyselfToParent = function (parent) {
-	zen.debug("* DomNodeCompon.appendMyselfToParent: domNode => " +
-		      this.domNode + ", parent => " + parent);
-	parent.appendChild(this);
-    };
-    this.appendChild = function (child) {
-	zen.debug("* DomNodeCompon.appendChild: child => " +
-		      child + ", this => " + this);
-	this.domNode.appendChild(child.getDomNode());
-	this.children.push(child);
-    };
-    this.getDomNode = function () {
-	zen.debug("* DomNodeCompon.getDomNode: domNode => " + this.domNode);
-	return this.domNode;
-    };
-    this.getChildCompons = function () { //FIXME: WORKING ON THIS: WAS BROKEN!
-	return this.children;
-	var domNode = this.domNode;
-	zen.debug("* zen.DomNodeCompon.getChildCompons: domNode => " +
-		      domNode);
-	return dojo.map(domNode.children,
-			function(c) {
-			    var w = dijit.byNode(c);
-			    //return w || c;
-			    return w ||
-				zen.DomNodeCompon.fromDomNode(c);
-			});
-    };
-    this.destroyCompon = function() {
-	var compon, index;
-	zen.debug("* zen.DomNodeCompon.destroyCompon: this => " + this +
-		      ", domNode => " + this.domNode);
-	dojo.forEach(this.getChildCompons(),
-		     function(child) {
-			 child.destroyCompon();
-		     });
-	dojo.destroy(this.domNode);
-    };
-}
-
 zen.DomNodeCompon.fromDomNode = function (node) {
     var index = 0, compon, len; // = zen.domNodeCompons.length;
     var allDomNodeCompons;
-    zen.debug("* zen.DomNodeCompon.fromDomNode: len => " + len +
-	      ", node => " + node);
-    allDomNodeCompons = canvas.topCompons.domNodeCompons.concat(
-	toolbars.topCompons.domNodeCompons);
+    if(d>4)zen.debug("* zen.DomNodeCompon.fromDomNode: len => " + len +
+		     ", node => " + node);
+    allDomNodeCompons = canvas.rootCompons.domNodeCompons.concat(
+	toolbars.rootCompons.domNodeCompons);
     len = allDomNodeCompons.length;
     for (index; index<len; index++) {
 	compon = allDomNodeCompons[index];
-	zen.debug("* ...fromDomNode: index => " + index +
-		  ", compon => " + compon +
-		  ", allDomNodeCompons.length => " +
-		  allDomNodeCompons.length);
+	if(d>4)zen.debug("* ...fromDomNode: index => " + index +
+			 ", compon => " + compon +
+			 ", allDomNodeCompons.length => " +
+			 allDomNodeCompons.length);
 	if (compon.domNode == node) {
-	    zen.debug("* ...fromDomNode: returning compon " + compon);
+	    if(d>4)zen.debug("* ...fromDomNode: returning compon " + compon);
 	    return compon;
 	};
     };
@@ -207,8 +152,6 @@ zen.createTextNode = function(text, attributes) {
     // FIXME: Use dojo.create, if appropriate.
     var domNode = document.createTextNode(text);
     if(d>4)zen.debug("* zen.createTextNode: domNode => " + domNode);
-    //if(d>4)zen.debug("* zen.createTextNode: # of domNodeCompons => " +
-    //		  zen.domNodeCompons.length);
     domNodeCompon.domNode = domNode;
     return domNodeCompon;
 };
@@ -234,9 +177,6 @@ zen.createElement = function(kind, attributes) {
     // FIXME: Use dojo.create.
     var domNode = document.createElement(kind);
     if(d>4)zen.debug("* zen.createElement: domNode => " + domNode);
-    //zen.domNodeCompons.push(domNodeCompon);
-    //if(d>4)zen.debug("* zen.createElement: # of domNodeCompons => " +
-    //		  zen.domNodeCompons.length);
     dojo.attr(domNode, attributes || {}); //FIXME: Check this.
     domNodeCompon.domNode = domNode;
     return domNodeCompon;
@@ -261,15 +201,15 @@ zen.startup = function(widgetCompons) {
 // Zen.createDijit does not allow a dijit to be built on a
 // passed-in HTML element node. Instead, the dijit constructor is
 // called without reference to a node, thus causing it to create a
-// top node on the fly. The dijit can be added to a parent
+// root node on the fly. The dijit can be added to a parent
 // component afterwards.
-zen.createDijit = function(klass, initParms, topNode) {
+zen.createDijit = function(klass, initParms, rootNode) {
     if(d>4)zen.debug("zen.dojo.createDijit, klass => " + klass);
     var node = null;
     var widget;
     dojo.require(klass);
-    if (topNode) {
-	node = topNode.domNode;
+    if (rootNode) {
+	node = rootNode.domNode;
     };
     //NOTE: We don't use console.assert because it won't throw in Firebug Lite.
     if (initParms && initParms.id) {
@@ -339,7 +279,6 @@ zen.createDijit = function(klass, initParms, topNode) {
 		     });
 	widget.destroy();
     };
-    //zen.widgets.push(widget);
     return widget;
 };
 
@@ -351,20 +290,23 @@ zen.renderTree = function(treeSpec, parent) {
     var zenTree;
     if(d>3)zen.info("##### ENTER: zen.renderTree #####");
     zenTree = zen.createSubtree(treeSpec);
-    if(d>4)zen.debug("* Created zenTree");
+    if(d>0)zen.group("renderTree: new zenTree");
     if(d>0)zen.dir(zenTree);
+    if(d>0)zen.groupEnd();
     if(d>4)zen.debug("##### zen.renderTree: zenTree => " + zenTree);
-    zenTree.topCompon.appendMyselfToParent(parent);
-    if(d>4)zen.debug("* Appended new tree to parent");
+    zenTree.rootCompon.appendMyselfToParent(parent);
+    if(d>0)zen.group("renderTree: Appended new zenTree to parent");
     if(d>0)zen.dir(zenTree);
+    if(d>0)zen.groupEnd();
     zen.startup(zenTree.treeCompons.widgets);
     if(d>3)zen.info("##### EXIT: zen.renderTree #####");
-    if(d>0)zen.dir(zenTree);
     return zenTree;
 };
 
 zen.createSubtree = function(treeSpec) {
-    var index, rule, topCompon, newCompon, len, constructor,
+    var index, rule, rootCompon, newCompon, len, constructor,
+	widgets = [],
+	elements = [],
 	treeCompons = createNew(zen.TreeCompons),
         zenTree = createNew(zen.Tree),
 	componKind = treeSpec[0],
@@ -374,22 +316,28 @@ zen.createSubtree = function(treeSpec) {
     if(d>4)zen.debug("* ENTER zen.createSubtree: rule => " + rule +
 		  ", componKind => " + componKind);
     constructor = zen.rule2ref(rule);
-    topCompon = constructor.call(document, componKind, initParms);
-    zenTree.topCompon = topCompon;
-    if(d>4)zen.debug("* zen.createSubtree: topCompon => " + topCompon);
+    rootCompon = constructor.call(document, componKind, initParms);
+    zenTree.rootCompon = rootCompon;
+    if(d>4)zen.debug("* zen.createSubtree: rootCompon => " + rootCompon);
     len = subtreeSpec.length;
     for (index=0; index<len; index++) {
-	newCompon = zen.createSubtree(subtreeSpec[index]).topCompon;
-	newCompon.appendMyselfToParent(topCompon);
-	if (newCompon.isDojoWidget) {
-	    treeCompons.widgets.push(newCompon);
-	} else {
-	    treeCompons.domNodeCompons.push(newCompon);
-	};
+	newCompon = zen.createSubtree(subtreeSpec[index]).rootCompon;
+	if(d>0)zen.group("createSubtree: newCompon after recursive call");
+	if(d>0)zen.dir(newCompon);
+	if(d>0)zen.groupEnd();
+	newCompon.appendMyselfToParent(rootCompon);
+	treeCompons.pushCompon(newCompon);
+	if(d>0)zen.group("createSubtree: after push of newCompon");
+	if(d>0)zen.dir(treeCompons);
+	if(d>0)zen.groupEnd();
     };
+    
+    treeCompons.pushCompon(rootCompon);
     zenTree.treeCompons = treeCompons;
-    if(d>4)zen.debug("* EXIT zen.createSubtree, topCompon => " + topCompon);
+    if(d>0)zen.group("createSubtree: zenTree at return");
     if(d>0)zen.dir(zenTree);
+    if(d>0)zen.groupEnd();
+    if(d>4)zen.debug("* EXIT zen.createSubtree, rootCompon => " + rootCompon);
     return zenTree;
 };
 
@@ -585,20 +533,15 @@ zen.boxTable = function(componList, tbl) {
     if(d>4)zen.debug("* ENTER zen.boxTable: len => " + len);
     for (index=0; index<len; index++) {
 	if(d>4)zen.debug("* zen.boxTable: index => " + index);
-	// Treat this as info-level messages.
 	if(d>0)zen.group("* zen.boxTable: componList");
 	if(d>0)zen.dir(componList);
 	if(d>0)zen.groupEnd();
 	compon = componList[index];
-	if(d>4)zen.debug("* zen.boxTable: compon => " + compon);
 	row = zen.boxCompon(compon, tbl);
-	if(d>4)zen.debug("* zen.boxTable: compon => " + compon + ", domNode => " +
-		      compon.domNode);
 	children = compon.getChildCompons();
-	// Treat these as an info-level messages.
-	if(d>0)zen.group("* zen.boxTable: component children");
-	if(d>0)zen.dir(children);
-	if(d>0)zen.groupEnd();
+	if(d>1)zen.group("* zen.boxTable: component children");
+	if(d>1)zen.dir(children);
+	if(d>1)zen.groupEnd();
 	if (children.length > 0) {
 	    if(d>4)zen.debug("* zen.boxTable: create cell");
 	    cell = zen.createElement("td", {class:"boxTD2"});
@@ -736,6 +679,5 @@ zen.init = function() {
     if(d>4)zen.debug("zen.body => " + zen.body + 
 	      ", zen.body.domNode => " + zen.body.domNode);
     toolboxTree = zen.renderTree(toolbox, zen.body);
-    //zen.debugLevel = 5;
-    d = 5;
+    d = 1;
 };
