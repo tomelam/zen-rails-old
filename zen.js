@@ -303,8 +303,10 @@ zen.renderTree = function(treeSpec, parent) {
     return zenTree;
 };
 
+var createSubtreeRecursion = 0;
+
 zen.createSubtree = function(treeSpec) {
-    var index, rule, rootCompon, newCompon, len, constructor,
+    var index, rule, rootCompon, newCompon, len, constructor, newSubtree,
 	widgets = [],
 	elements = [],
 	treeCompons = createNew(zen.TreeCompons),
@@ -312,32 +314,50 @@ zen.createSubtree = function(treeSpec) {
 	componKind = treeSpec[0],
 	initParms = treeSpec[1],
 	subtreeSpec = treeSpec[2];
+    createSubtreeRecursion += 1;
+    if(d>0)zen.group("ENTER createSubtree: zenTree, recursion level => " +
+		     createSubtreeRecursion);
+    if(d>0)zen.dir(zenTree);
+    if(d>0)zen.groupEnd();
+
+// UP TO NEXT COMMENT treespec IS USED
     rule = zen.invertedRulesTable[componKind];
     if(d>4)zen.debug("* ENTER zen.createSubtree: rule => " + rule +
 		  ", componKind => " + componKind);
     constructor = zen.rule2ref(rule);
     rootCompon = constructor.call(document, componKind, initParms);
+
     zenTree.rootCompon = rootCompon;
     if(d>4)zen.debug("* zen.createSubtree: rootCompon => " + rootCompon);
     len = subtreeSpec.length;
     for (index=0; index<len; index++) {
-	newCompon = zen.createSubtree(subtreeSpec[index]).rootCompon;
-	if(d>0)zen.group("createSubtree: newCompon after recursive call");
-	if(d>0)zen.dir(newCompon);
-	if(d>0)zen.groupEnd();
-	newCompon.appendMyselfToParent(rootCompon);
-	treeCompons.pushCompon(newCompon);
-	if(d>0)zen.group("createSubtree: after push of newCompon");
-	if(d>0)zen.dir(treeCompons);
-	if(d>0)zen.groupEnd();
+	newSubtree = zen.createSubtree(subtreeSpec[index]);
+//
+
+	//if(d>0)zen.group("createSubtree: newCompon after recursive call");
+	//if(d>0)zen.dir(newCompon);
+	//if(d>0)zen.groupEnd();
+	newSubtree.rootCompon.appendMyselfToParent(rootCompon);
+	dojo.forEach(
+	    newSubtree.treeCompons.domNodeCompons.concat(
+		newSubtree.treeCompons.widgets),
+	    function(compon) {
+		treeCompons.pushCompon(compon);
+		if(d>0)zen.group("forEach(compon)");
+		if(d>0)zen.dir(compon);
+		if(d>0)zen.groupEnd();
+	    });
+	treeCompons.pushCompon(newSubtree.rootCompon);
     };
     
     treeCompons.pushCompon(rootCompon);
     zenTree.treeCompons = treeCompons;
-    if(d>0)zen.group("createSubtree: zenTree at return");
+    if(d>0)zen.group("EXIT createSubtree: zenTree, recursion level => " +
+		     createSubtreeRecursion);
     if(d>0)zen.dir(zenTree);
     if(d>0)zen.groupEnd();
     if(d>4)zen.debug("* EXIT zen.createSubtree, rootCompon => " + rootCompon);
+    createSubtreeRecursion -= 1;
     return zenTree;
 };
 
@@ -350,6 +370,12 @@ zen.clearTheCanvas = function (componsToDestroy, componsToSave) {
     if(d>4)zen.debug("* Entering zen.clearTheCanvas, destroying compons " +
 		  componsToDestroy + " except for " + componsToSave);
     if(d>4)zen.debug("* componsToDestroy.length => " + componsToDestroy.length);
+    if(d>0)zen.group("zen.clearTheCanvas: componsToDestroy");
+    if(d>0)zen.dir(componsToDestroy);
+    if(d>0)zen.groupEnd();
+    if(d>0)zen.group("zen.clearTheCanvas: componsToSave");
+    if(d>0)zen.dir(componsToSave);
+    if(d>0)zen.groupEnd();
     dojo.forEach(componsToDestroy,
 		 function(compon) {
 		     if(d>4)zen.debug("*** compon => " + compon);

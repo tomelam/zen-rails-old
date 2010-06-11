@@ -241,9 +241,14 @@
     };
 
     clearTheTestRendering = function() {
+	if(d>0)zen.group("clearTheTestRendering: newCompons");
+	if(d>0)zen.dir(newCompons);
+	if(d>0)zen.groupEnd();
+	//return;
 	zen.clearTheCanvas(newCompons);
     };
 
+    /*
     clearTheCanvas = function() {
  	componsToDestroy = canvas.domNodeCompons.concat(canvas.widgets);
 	zen.info("componsToDestroy.length => " + componsToDestroy.length);
@@ -252,3 +257,4 @@
 		canvas.widgets));
 	canvas = createNew(zen.TreeCompons);
     };
+    */
