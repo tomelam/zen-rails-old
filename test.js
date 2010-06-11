@@ -1,4 +1,4 @@
-    zen.test.topCompons = [];
+    //zenTest = {};
 
     // Test createNew.
     Foo = function() {
@@ -214,70 +214,59 @@
     ["dijit.layout.ContentPane",
      {id:"workingNode",style:{width:"100%",height:"200px",
 			      backgroundColor:"lightgreen"}},
-     []];    
+     []];
+    //var newTree; //FIXME: Remove this.
+    var newCompons = [];
+    var canvas = createNew(zen.TreeCompons);
 
-    diagramTree = function(newComponent) {
-	var tblCompon, contentBox, floatingPaneContent;
-	var diagramPaneCompon, floatingPane;
-
-	zen.debug("*** Entering diagramTree");
-	zen.info("############################");
-	zen.info("##### CREATING DIAGRAM #####");
-	zen.info("############################");
-	zen.debug("*** dojo.byId('diagramPane') => " +
-		  dojo.byId("diagramPane"));
-	zen.clearTheHierarchyDiagram();
-	tblCompon = zen.createElement("table",
-				      {id:"componTbl",class:"boxTable"});
-	zen.debug("*** tblCompon => " + tblCompon +
-		  ", tblCompon.domNode => " + tblCompon.domNode);
-	diagramPaneCompon = createNew(zen.DomNodeCompon,
-				      dojo.byId("diagramPane"));
-	zen.debug("*** diagramPaneCompon => " + diagramPaneCompon);
-	dojo.require("dijit._base");
-	floatingPane = dijit.byId("diagramPane");
-	if (!floatingPane) {
-	    floatingPane = zen.createDijit(
-		"dojox.layout.FloatingPane",
-		{title:"Hierarchy of Web Page Components",
-		 style:{backgroundColor:"yellow", zIndex:"10"},
-		 resizable:true},
-		diagramPaneCompon);
-	};
-	zen.debug("*** Appended diagramPaneCompon");
-	tblCompon.appendMyselfToParent(floatingPane);
-	zen.debug("*** Appended tblCompon");
-
-	zen.boxTable([newComponent], tblCompon);
-	zen.debug("*** Created boxTable");
-	contentBox = dojo.contentBox("componTbl");
-	zen.debug("*** Got contentBox => " + contentBox);
-	floatingPane.startup();
-	zen.debug("*** Started up floatingPane");
-	floatingPane.resize({t:30, l:30, w:contentBox.w+5, h:contentBox.h+31});
-	zen.debug("*** Resized floatingPane");
-	floatingPaneContent = dojo.query(
-	    "#diagramPane.dojoxFloatingPane > .dojoxFloatingPaneCanvas > .dojoxFloatingPaneContent")[0];
-	zen.debug("*** floatingPaneContent => " + floatingPaneContent);
-	dojo.addClass(floatingPaneContent,"zenDiagramFloatingPaneContent");
-	return floatingPane;
-    };
-
-     //FIXME: Should probably be broken into 2 parts: 1 to test the
-     //creation of a tree & 1 to fill out the hierarchy of web page
-     //components. And this stuff should be moved to zen.js. Also have
-     //to think about the use of the same id ('workingNode') for many
-     //elements. Note that deleting a tree should remove the
-     //conflicting element, so trying to delete a tree and add it or
-     //another using the same id would be a good test.
+     //FIXME: Have to think about the use of the same id
+     //(e.g. 'workingNode') for many elements. Note that deleting a
+     //tree should remove the conflicting element, so trying to delete
+     //a tree and add it or another using the same id would be a good
+     //test.
     test = function(tree) {
-	var newComponent, diagram;
+	var diagram, newTree;
 
-	console.debug("*** Testing creation and diagramming of a tree");
+	zen.info("* Testing creation and diagramming of a tree");
 
-	newComponent = zen.renderTree(tree, zen.body);
-	zen.test.topCompons.push(newComponent);
-	diagram = diagramTree(newComponent);
-	zen.test.topCompons.push(diagram);
-	console.debug("*** Done testing creation and rendering of a tree");
+	newTree = zen.renderTree(tree, zen.body);
+	if(d>1)zen.dir(newTree);
+	newCompons =
+	    canvas.domNodeCompons.concat(
+		newTree.treeCompons.domNodeCompons);
+	newCompons.concat(
+	    canvas.widgets.concat(
+		newTree.treeCompons.widgets));
+/*
+	//zenTest.topCompons.push(newComponent);
+	newTree.treeCompons.domNodeCompons.push(newComponent);
+	diagram = zen.diagramTree(newTree.topCompon);
+	newTree.treeCompons.domNodeCompons.push(newComponent);
+	//zenTest.topCompons.push(diagram);
+*/
+	zen.info("* Done testing creation and rendering of a tree");
     };
+
+    clearTheTestRendering = function() {
+/*
+ 	componsToDestroy = newTree.treeCompons.domNodeCompons.concat(
+	    newTree.treeCompons.widgets);
+	zen.info("componsToDestroy.length => " + componsToDestroy.length);
+	console.dir(newTree);
+	//zen.clearTheCanvas(componsToDestroy);
+*/
+	zen.clearTheCanvas(newCompons);
+	//newTree = null;
+	//newCompons = [];
+    };
+
+    clearTheCanvas = function() {
+ 	componsToDestroy = canvas.domNodeCompons.concat(canvas.widgets);
+	zen.info("componsToDestroy.length => " + componsToDestroy.length);
+	console.dir(newTree);
+	zen.clearTheCanvas(
+	    canvas.domNodeCompons.concat(
+		canvas.widgets));
+	canvas = createNew(zen.TreeCompons);
+    };
+    
