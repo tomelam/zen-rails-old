@@ -258,3 +258,97 @@
 	canvas = createNew(zen.TreeCompons);
     };
     */
+
+
+////
+//// INITIALIZE TOOLBOX AND SOME VARIABLES
+////
+////
+testInit = function() {
+    //FIXME: This version of toolbox is just for testing. Think of a
+    //way it can be kept for regression testing.
+    var toolboxTree;
+    var toolbox =
+    ["dojox.layout.FloatingPane",
+     {id:"testRendering",
+      title:"Rendering Tests",style:{top:"30px",right:"30px"},closable:true},
+     [["center", {},
+       [["dijit.form.Button",
+	 {label:"Clear the Test Rendering",
+	  onClick:function() {
+	      clearTheTestRendering();
+	  }},
+	 []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"Clear the Canvas",
+	  onClick:function() {
+	      clearTheCanvas();
+	  }},
+	 []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"Clear the Hierarchy Chart",
+	  onClick:function(){zen.clearTheHierarchyDiagram()}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 1: red DIV",
+	  onClick:function(){test(tree1)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 2: red DIV with orange DIV",
+	  onClick:function(){test(tree2)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 3: red DIV with table",
+	  onClick:function(){test(tree3)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 4: DIV with P and red ContentPane",
+	  onClick:function(){test(tree4)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 5: DIV (id:workingNode) with<br/>ContentPane (class:box)",
+	  onClick:function(){test(tree5)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:
+	  "test 6: DIV w/ P & red ContentPane<br/>w/ box ContentPane w/ DIV",
+	  onClick:function(){test(tree6)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:
+	  "test 7: AccordionContainer & AccordionPanes<br/>" +
+	  "'workingNode' & 'cp1'",
+	  onClick:function(){test(tree7)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:
+	  "test 8: AccordionContainer 'workingNode' & AccordionPane with title",
+	  onClick:function(){test(tree8)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 9: AccordionContainer w/ AccordionPanes, each w/ DIV",
+	  onClick:function(){test(tree9)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 10: AccordionContainer w/ AccordionPanes, each /w DIV",
+	  onClick:function(){test(tree10)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 11: nested AccordionPanes & ContentPanes",
+	  onClick:function(){test(tree11)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"test 12: nested AccordionPanes & ContentPanes",
+	  onClick:function(){test(tree12)}}, []],
+	["br", {}, []],
+	["dijit.form.Button",
+	 {label:"Main Controls",onClick:function(){test(devTools)}}, []]]]]];
+    zen.initIRT();
+    zen.body = createNew(zen.DomNodeCompon, dojo.body());
+    if(d>4)zen.debug("zen.body => " + zen.body + 
+	      ", zen.body.domNode => " + zen.body.domNode);
+    toolboxTree = zen.renderTree(toolbox, zen.body);
+    d = 1;
+};
