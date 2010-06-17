@@ -27,10 +27,10 @@ tests.register("zen.tests.component", [
 	    dojo.require("zen.component");
 	},
 	runTest: function(){
-	    var compon = zen.createElement(
-		"div",
-		{style:{width:"100px",height:"50px",backgroundColor:"red"},
-		 id:"red DIV 100 pixels wide and 50 pixels tall"});
+	    var compon = zen.createCompon(
+		["div",
+		 {style:{width:"100px",height:"50px",backgroundColor:"red"},
+		  id:"red DIV 100 pixels wide and 50 pixels tall"}]);
 	    doh.assertNotEqual(compon, "undefined");
 	    doh.assertNotEqual(compon.domNode, "[object HTMLUnknownElement]");
 	    doh.assertEqual(dojo.style(compon.domNode,"width"), 100);

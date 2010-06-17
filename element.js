@@ -111,11 +111,15 @@ zen.createTextNode = function(text, attributes) {
 zen.createElement = function(kind, attributes) {
     var domNodeCompon = createNew(zen.DomNodeCompon);
     if (attributes && attributes.id) {
+	/*FIXME: Revisit this. Currently it would cause a test to fail
+          because we are not requiring dijit at this point. (We
+          shouldn't, either.)
 	if (dijit.byId(attributes.id) != null) {
 	 throw new Error(
 	 "Exception: zen.createElement: Dojo widget already exists w/ id => "+
 	 attributes.id + ", kind => " + kind);
 	};
+        */
 	if (dojo.byId(attributes.id) != null) {
 	throw new Error(
 	"Exception: zen.createElement: HTML element already exists w/ id => "+
