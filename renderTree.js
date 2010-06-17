@@ -1,42 +1,11 @@
 if (dojo) {
-    console.debug("Providing zen.createTree");
-    dojo.provide("zen.createTree");
+    console.debug("Providing zen.renderTree");
+    dojo.provide("zen.renderTree");
 } else {
     console.debug("No dojo!");
 };
 
-
-var zen = {};
-
-
-////
-//// CONSTRUCTORS
-////
-zen.Tree = function() {
-    this.doNotDelete = false;
-    this.rootCompon = null;
-    this.treeCompons = []; // List of zen.TreeCompons.
-}
-// Singleton.
-zen.Tree.allTrees = [];    // List of all separately created zen.Trees.
-
-//FIXME: Bad name. Also: must the zen.TreeCompons class know about
-//widgets & DOM nodes?
-//
-//FIXME: See http://higginsforpresident.net/2010/01/widgets-within-widgets/
-zen.TreeCompons = function() {
-    this.domNodeCompons = []; // List of zen.DomNodeCompons.
-    this.widgets = [];
-    this.pushCompon = function(component) {
-	if (component.isDojoWidget) {
-	    this.widgets.push(component);
-	    if (this.widgets.length > 1) alert("widgets!");
-	} else {
-	    this.domNodeCompons.push(component);
-	    if (this.domNodeCompons.length > 1) alert("domNodeCompons!");
-	};
-    };
-};
+dojo.require("zen.createTree");
 
 
 ////

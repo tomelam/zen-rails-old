@@ -2,39 +2,9 @@
 //// UNIT TESTS
 ////
 //// See http://www.sitepen.com/blog/2008/04/15/unit-testing-custom-code-with-the-dojo-objective-harness/
+//// and http://www.dojotoolkit.org/reference-guide/quickstart/doh.html
 
-////
-//// OBJECT CREATOR TESTS
-////
-Foo = function() {
-    var a = 1;
-    return {
-	// This is a closure. It acts like an
-	// accessor to a private variable.
-	    getA : function() {
-		return a;
-	    }
-    };
-};
-testObjectCreator = function() {
-    console.debug(".");
-    f = createNew(Foo);
-    console.debug("f.a => " + f.a); // => undefined
-    console.debug("f.getA() => " + f.getA()); // => 1
-    Bar = function() {
-	this.a = 1;
-	return 1;
-    }
-    console.debug(".");
-    b = createNew(Bar);
-    console.debug("b.a => " + b.a); // => 1
-    Baz = function(z) {
-	this.a = z;
-    }
-    console.debug(".");
-    c = createNew(Baz, 3, 4);
-    console.debug("c.a => " + c.a);
-};
+
 sayHello = function() { alert("Hi!"); }
 
 
