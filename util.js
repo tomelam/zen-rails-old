@@ -9,7 +9,6 @@
 //// 4 = info
 //// 5 = debug
 //// 6 = log
-//zen.debugLevel = 0; // Off.
 var d = 0; // Off.
 zen.log = console.log;
 zen.debug = console.debug;
@@ -85,7 +84,7 @@ zen.DomNodeCompon = function(element) {
 			});
     };
     this.destroyCompon = function() {
-	var compon, index;
+	var compon, index, lengthBefore, lengthAfter;
 	if(d>4)zen.debug("* zen.DomNodeCompon.destroyCompon: this => " + this +
 			 ", domNode => " + this.domNode);
 	dojo.forEach(this.getChildCompons(),
@@ -93,16 +92,63 @@ zen.DomNodeCompon = function(element) {
 			 child.destroyCompon();
 		     });
 	dojo.destroy(this.domNode);
+	index = zen.DomNodeCompon.allDomNodeCompons.indexOf(this);
+	zen.info("index => " + index);
+	if (index < 0) {
+	    console.group("Looking for " + this + " in list");
+	    console.dir(this);
+	    console.groupEnd();
+	    throw new Error("Exception: couldn't find DomNodeCompon in list.");
+	} else {
+	    if (index == (zen.DomNodeCompon.allDomNodeCompons.length - 1)) {
+		zen.info("Deleted compon is last; won't replace!");
+		lengthBefore = zen.DomNodeCompon.allDomNodeCompons.length;
+		zen.info("length before pop => " + lengthBefore);
+ 		//delete zen.DomNodeCompon.allDomNodeCompons[index];
+		zen.DomNodeCompon.allDomNodeCompons.pop();
+		lengthAfter = zen.DomNodeCompon.allDomNodeCompons.length;
+		zen.info("length after pop => " + lengthAfter);
+		if (lengthBefore == lengthAfter) {
+		    throw new Error("Exception! Length should reduce.");
+		};
+	    } else {
+		zen.info("Deleted compon is *NOT* last; will replace!");
+		lengthBefore = zen.DomNodeCompon.allDomNodeCompons.length;
+		zen.info("length before deletion => " + lengthBefore);
+ 		delete zen.DomNodeCompon.allDomNodeCompons[index];
+		lengthAfter = zen.DomNodeCompon.allDomNodeCompons.length;
+		zen.info("length after deletion => " + lengthAfter);
+ 		zen.DomNodeCompon.allDomNodeCompons[index] =
+		    zen.DomNodeCompon.allDomNodeCompons.pop();
+		zen.dir(zen.DomNodeCompon.allDomNodeCompons);
+		lengthAfter = zen.DomNodeCompon.allDomNodeCompons.length;
+		zen.info("length after replacement => " + lengthAfter);
+		if (lengthBefore == lengthAfter) {
+		    throw new Error("Exception! Length should reduce.");
+		};
+	    };
+	};
     };
-}
+    zen.DomNodeCompon.allDomNodeCompons.push(this);
+    console.group("Pushed " + this + " onto list");
+    console.dir(this);
+    console.groupEnd();
+    index = zen.DomNodeCompon.allDomNodeCompons.indexOf(this);
+    console.debug("index => " + index);
+};
 
+// Singletons.
+zen.DomNodeCompon.allDomNodeCompons = [];
 zen.DomNodeCompon.fromDomNode = function (node) {
     var index = 0, compon, len; // = zen.domNodeCompons.length;
     var allDomNodeCompons;
     if(d>4)zen.debug("* zen.DomNodeCompon.fromDomNode: len => " + len +
 		     ", node => " + node);
+    /*
     allDomNodeCompons = canvas.rootCompons.domNodeCompons.concat(
 	toolbars.rootCompons.domNodeCompons);
+    */
+    allDomNodeCompons = zen.DomNodeCompon.allDomNodeCompons;
     len = allDomNodeCompons.length;
     for (index; index<len; index++) {
 	compon = allDomNodeCompons[index];
@@ -115,7 +161,7 @@ zen.DomNodeCompon.fromDomNode = function (node) {
 	    return compon;
 	};
     };
-    if(d>1)zen.error("* ...fromDomNode: returning null, node => " +
+    if(d>4)zen.error("* ...fromDomNode: returning null, node => " +
 		     node + ", index => " + index);
     return null;
 };
@@ -146,12 +192,12 @@ zen.createElement = function(kind, attributes) {
     if (attributes && attributes.id) {
 	if (dijit.byId(attributes.id) != null) {
 	 throw new Error(
-	 "Exception: zen.createElement: Dojo widget already exists with id => "+
+	 "Exception: zen.createElement: Dojo widget already exists w/ id => "+
 	 attributes.id + ", kind => " + kind);
 	};
 	if (dojo.byId(attributes.id) != null) {
 	throw new Error(
-	"Exception: zen.createElement: HTML element already exists with id => "+
+	"Exception: zen.createElement: HTML element already exists w/ id => "+
 	attributes.id + ", kind => " + kind);
 	};
     };
@@ -174,7 +220,7 @@ zen.startup = function(widgetCompons) {
     //widgetCompons, which was pushed to in zen.createDijit.
     dojo.forEach(widgetCompons.reverse(),
 		 function(w) {
-		     //if(d>4)zen.debug("* starting up " + w);
+		     if(d>4)zen.debug("* starting up " + w);
 		     w.startup(); }
 		);
 };
@@ -199,12 +245,12 @@ zen.createDijit = function(klass, initParms, rootNode) {
     if (initParms && initParms.id) {
 	if (dijit.byId(initParms.id) != null) {
 	  throw new Error(
-	  "Exception: zen.createDijit: Dojo widget already exists with id => " +
+	  "Exception: zen.createDijit: Dojo widget already exists w/ id => "+
 	  initParms.id + ", klass => " + klass);
 	};
 	if (dojo.byId(initParms.id) != null) {
 	  throw new Error(
-	  "Exception: zen.createDijit: HTML element already exists with id => "+
+	  "Exception: zen.createDijit: HTML element already exists w/ id => "+
 	  initParms.id + ", klass => " + klass);
 	};
     };
@@ -231,10 +277,10 @@ zen.createDijit = function(klass, initParms, rootNode) {
 	    if(d>4)zen.debug("widgetp.addChild(widgetc), widgetp => " +
 			  parent + ", widgetc => " + widget);
 	    parent.children.push(widget);
-	    return parent.addChild(widget);         // parent is Dojo widget
+	    return parent.addChild(widget);       // parent is Dojo widget
 	} else {
 	    if(d>4)zen.debug("domNode.appendChild(widget.domNode)");
-	    return parent.appendChild(widget);      // parent is not Dojo widget
+	    return parent.appendChild(widget);    // parent is not Dojo widget
 	};
     };
     widget.appendChild = function(child) {
@@ -242,7 +288,7 @@ zen.createDijit = function(klass, initParms, rootNode) {
 	if (child.isDojoWidget) {
 	    if(d>4)zen.debug("widget.appendChild(widget)");
 	    widget.children.push(child);
-	    return widget.addChild(child);           // child is Dojo widget
+	    return widget.addChild(child);        // child is Dojo widget
 	} else {
 	    if(d>4)zen.debug("widget.appendChild(domNode)");
 	    if (widget.children.length > 0) {
@@ -250,7 +296,7 @@ zen.createDijit = function(klass, initParms, rootNode) {
 		    "A widget can have only one child if it's only HTML.");
 	    }
 	    widget.children = [child];
-	    return widget.setContent(child.domNode); // child is not Dojo widget
+	    return widget.setContent(child.domNode); // child isn't Dojo widget
 	};
     };
     widget.destroyCompon = function() {

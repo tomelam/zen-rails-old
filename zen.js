@@ -1,5 +1,3 @@
-//FIXME: Rename 'createSubtree' to 'createTree' and rename
-//'createSubtrees' to 'createChildren'.
 var zen = {};
 
 
@@ -7,9 +5,12 @@ var zen = {};
 //// CONSTRUCTORS
 ////
 zen.Tree = function() {
+    this.doNotDelete = false;
     this.rootCompon = null;
     this.treeCompons = []; // List of zen.TreeCompons.
 }
+// Singleton.
+zen.Tree.allTrees = [];    // List of all separately created zen.Trees.
 
 //FIXME: Bad name. Also: must the zen.TreeCompons class know about
 //widgets & DOM nodes?
@@ -21,8 +22,10 @@ zen.TreeCompons = function() {
     this.pushCompon = function(component) {
 	if (component.isDojoWidget) {
 	    this.widgets.push(component);
+	    if (this.widgets.length > 1) alert("widgets!");
 	} else {
 	    this.domNodeCompons.push(component);
+	    if (this.domNodeCompons.length > 1) alert("domNodeCompons!");
 	};
     };
 };
@@ -33,38 +36,40 @@ zen.TreeCompons = function() {
 ////
 zen.renderTree = function(treeSpec, parent) {
     var zenTree;
-    if(d>3)zen.info("##### ENTER: zen.renderTree #####");
-    zenTree = zen.createSubtree(treeSpec);
-    if(d>0)zen.group("renderTree: new zenTree");
-    if(d>0)zen.dir(zenTree);
-    if(d>0)zen.groupEnd();
+    if(d>4)zen.info("##### ENTER: zen.renderTree #####");
+    zenTree = zen.createTree(treeSpec);
+    if(d>4)zen.group("renderTree: new zenTree");
+    if(d>4)zen.dir(zenTree);
+    if(d>4)zen.groupEnd();
     if(d>4)zen.debug("##### zen.renderTree: zenTree => " + zenTree);
     zenTree.rootCompon.appendMyselfToParent(parent);
-    if(d>0)zen.group("renderTree: Appended new zenTree to parent");
-    if(d>0)zen.dir(zenTree);
-    if(d>0)zen.groupEnd();
+    if(d>4)zen.group("renderTree: Appended new zenTree to parent");
+    if(d>4)zen.dir(zenTree);
+    if(d>4)zen.groupEnd();
     zen.startup(zenTree.treeCompons.widgets);
-    if(d>3)zen.info("##### EXIT: zen.renderTree #####");
+    if(d>4)zen.info("##### EXIT: zen.renderTree #####");
     return zenTree;
 };
 
-var recursion = 0;
-zen.createSubtree = function(treeSpec) {
+var recursion = 0,
+    transitoryTrees = createNew(zen.Tree);
+zen.createTree = function(treeSpec) {
     var index, newCompon, newSubtree,
         rootCompon = zen.createCompon(treeSpec),
 	treeCompons = createNew(zen.TreeCompons),
         zenTree = createNew(zen.Tree);
     recursion += 1;
-    if(d>0)zen.group("ENTER createSubtree: zenTree, recursion => " + recursion);
-    if(d>0)zen.dir(zenTree);
-    if(d>0)zen.groupEnd();
+    if(d>4)zen.group("ENTER createTree: zenTree, recursion => " + recursion);
+    if(d>4)zen.dir(zenTree);
+    if(d>4)zen.groupEnd();
     zen.createChildren(rootCompon, treeSpec[2]);
     zenTree.rootCompon = rootCompon;
     treeCompons.pushCompon(rootCompon);
+    //transitoryTrees.push(zenTree);
     zenTree.treeCompons = treeCompons;
-    if(d>0)zen.group("EXIT createSubtree: zenTree, recursion => " + recursion);
-    if(d>0)zen.dir(zenTree);
-    if(d>0)zen.groupEnd();
+    if(d>4)zen.group("EXIT createTree: zenTree, recursion => " + recursion);
+    if(d>4)zen.dir(zenTree);
+    if(d>4)zen.groupEnd();
     recursion -= 1;
     return zenTree;
 };
@@ -72,7 +77,7 @@ zen.createSubtree = function(treeSpec) {
 zen.createChildren = function(parentCompon, childrenSpecs) {
     dojo.forEach(childrenSpecs,
 		 function(childSpec) {
-		     newSubtree = zen.createSubtree(childSpec);
+		     newSubtree = zen.createTree(childSpec);
 		     newSubtree.rootCompon.appendMyselfToParent(parentCompon);
 		 });
     /*
@@ -81,13 +86,12 @@ zen.createChildren = function(parentCompon, childrenSpecs) {
 		newSubtree.treeCompons.widgets),
 	    function(compon) {
 		treeCompons.pushCompon(compon);
-		if(d>0)zen.group("forEach(compon)");
-		if(d>0)zen.dir(compon);
-		if(d>0)zen.groupEnd();
+		if(d>4)zen.group("forEach(compon)");
+		if(d>4)zen.dir(compon);
+		if(d>4)zen.groupEnd();
 	    });
 	treeCompons.pushCompon(newSubtree.rootCompon);
-    };
-*/
+    */
 };
 
 //FIXME: Maybe we could think up a good scheme for which components to
@@ -97,14 +101,14 @@ zen.clearTheCanvas = function (componsToDestroy, componsToSave) {
 	componsToSave = null;
     };
     if(d>4)zen.debug("* Entering zen.clearTheCanvas, destroying compons " +
-		  componsToDestroy + " except for " + componsToSave);
+		     componsToDestroy + " except for " + componsToSave);
     if(d>4)zen.debug("* componsToDestroy.length => " + componsToDestroy.length);
-    if(d>0)zen.group("zen.clearTheCanvas: componsToDestroy");
-    if(d>0)zen.dir(componsToDestroy);
-    if(d>0)zen.groupEnd();
-    if(d>0)zen.group("zen.clearTheCanvas: componsToSave");
-    if(d>0)zen.dir(componsToSave);
-    if(d>0)zen.groupEnd();
+    if(d>4)zen.group("zen.clearTheCanvas: componsToDestroy");
+    if(d>4)zen.dir(componsToDestroy);
+    if(d>4)zen.groupEnd();
+    if(d>4)zen.group("zen.clearTheCanvas: componsToSave");
+    if(d>4)zen.dir(componsToSave);
+    if(d>4)zen.groupEnd();
     dojo.forEach(componsToDestroy,
 		 function(compon) {
 		     if(d>4)zen.debug("*** compon => " + compon);
@@ -226,15 +230,15 @@ zen.boxTable = function(componList, tbl) {
     if(d>4)zen.debug("* ENTER zen.boxTable: len => " + len);
     for (index=0; index<len; index++) {
 	if(d>4)zen.debug("* zen.boxTable: index => " + index);
-	if(d>0)zen.group("* zen.boxTable: componList");
-	if(d>0)zen.dir(componList);
-	if(d>0)zen.groupEnd();
+	if(d>4)zen.group("* zen.boxTable: componList");
+	if(d>4)zen.dir(componList);
+	if(d>4)zen.groupEnd();
 	compon = componList[index];
 	row = zen.boxCompon(compon, tbl);
 	children = compon.getChildCompons();
-	if(d>1)zen.group("* zen.boxTable: component children");
-	if(d>1)zen.dir(children);
-	if(d>1)zen.groupEnd();
+	if(d>4)zen.group("* zen.boxTable: component children");
+	if(d>4)zen.dir(children);
+	if(d>4)zen.groupEnd();
 	if (children.length > 0) {
 	    if(d>4)zen.debug("* zen.boxTable: create cell");
 	    cell = zen.createElement("td", {class:"boxTD2"});

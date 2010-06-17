@@ -1,263 +1,257 @@
-    // Test createNew.
-    Foo = function() {
-	var a = 1;
-	return {
-	    // This is a closure. It acts like an
-	    // accessor to a private variable.
+////
+//// UNIT TESTS
+////
+//// See http://www.sitepen.com/blog/2008/04/15/unit-testing-custom-code-with-the-dojo-objective-harness/
+
+////
+//// OBJECT CREATOR TESTS
+////
+Foo = function() {
+    var a = 1;
+    return {
+	// This is a closure. It acts like an
+	// accessor to a private variable.
 	    getA : function() {
 		return a;
 	    }
-	};
-	
     };
-    testObjectCreator = function() {
-	console.debug(".");
-	f = createNew(Foo);
-	console.debug("f.a => " + f.a); // => undefined
-	console.debug("f.getA() => " + f.getA()); // => 1
-	Bar = function() {
-	    this.a = 1;
-	    return 1;
-	}
-	console.debug(".");
-	b = createNew(Bar);
-	console.debug("b.a => " + b.a); // => 1
-	Baz = function(z) {
-	    this.a = z;
-	}
-	console.debug(".");
-	c = createNew(Baz, 3, 4);
-	console.debug("c.a => " + c.a);
+};
+testObjectCreator = function() {
+    console.debug(".");
+    f = createNew(Foo);
+    console.debug("f.a => " + f.a); // => undefined
+    console.debug("f.getA() => " + f.getA()); // => 1
+    Bar = function() {
+	this.a = 1;
+	return 1;
     }
-    sayHello = function() { alert("Hi!"); }
-    //testObjectCreator();
+    console.debug(".");
+    b = createNew(Bar);
+    console.debug("b.a => " + b.a); // => 1
+    Baz = function(z) {
+	this.a = z;
+    }
+    console.debug(".");
+    c = createNew(Baz, 3, 4);
+    console.debug("c.a => " + c.a);
+};
+sayHello = function() { alert("Hi!"); }
 
-    var tree1 =
-    ["div", {style:{width:"180px",height:"180px",backgroundColor:"red"},
-	     id:"workingNode1",title:"Title"}, []];
-    var tree2 =
-    ["div", {id:"workingNode2",
-	     style:{width:"200px",height:"200px",backgroundColor:"red"}},
-     [["div", {id:"workingNode2b",
-	       style:{width:"180px",height:"180px",backgroundColor:"orange"},
-	title:"Title 1"}, []]]];
-    var tree3 =
-    ["div", {id:"workingNode3",
-	     style:{width:"200px",height:"250px",backgroundColor:"red"}},
-     [["div",
-       {}, []],
-      ["table",
-       {style:{backgroundColor:"yellow"}, title:"Title 3"},
-       [["tr",
-	 {style:{height:"50px"}},
-	 [["td", {style:{width:"50px"}}, []],
-	  ["td", {style:{width:"50px"}}, []]]],
-	["tr",
-	 {style:{height:"60px"}},
-	 [["td", {style:{width:"50px"}}, []],
-	  ["td", {style:{width:"50px"}}, []]]],
-	["tr",
-	 {style:{height:"50px"}},
-	 [["td", {style:{width:"50px"}}, []],
-	  ["td", {style:{width:"50px"}}, []]]]]],
-      ["p", {}, [["span", {}, [["div", {}, []], ["div", {}, []]]],
-		  ["div", {}, []]]]]];
-    var tree4 =
-    ["div", {id:"workingNode4"},
-     [["p", {}, []],
-      ["dijit.layout.ContentPane",
-       {style:{width:"300px",height:"300px",backgroundColor:"red"}},
-       []]]];
-    var tree5 =
-    ["div", {id:"workingNode5"},
-     [["p", {}, []],
-      ["dijit.layout.ContentPane",
+
+////
+//// RENDERING-TEST CONFIGURATIONS
+////
+var tree1 =
+["div", {style:{width:"180px",height:"180px",backgroundColor:"red"},
+	 id:"workingNode1",title:"Title"}, []];
+var tree2 =
+["div", {id:"workingNode2",
+	 style:{width:"200px",height:"200px",backgroundColor:"red"}},
+ [["div", {id:"workingNode2b",
+	   style:{width:"180px",height:"180px",backgroundColor:"orange"},
+	   title:"Title 1"}, []]]];
+var tree3 =
+["div", {id:"workingNode3",
+	 style:{width:"200px",height:"250px",backgroundColor:"red"}},
+ [["div",
+   {}, []],
+  ["table",
+   {style:{backgroundColor:"yellow"}, title:"Title 3"},
+   [["tr",
+     {style:{height:"50px"}},
+     [["td", {style:{width:"50px"}}, []],
+      ["td", {style:{width:"50px"}}, []]]],
+    ["tr",
+     {style:{height:"60px"}},
+     [["td", {style:{width:"50px"}}, []],
+      ["td", {style:{width:"50px"}}, []]]],
+    ["tr",
+     {style:{height:"50px"}},
+     [["td", {style:{width:"50px"}}, []],
+      ["td", {style:{width:"50px"}}, []]]]]],
+  ["p", {}, [["span", {}, [["div", {}, []], ["div", {}, []]]],
+	     ["div", {}, []]]]]];
+var tree4 =
+["div", {id:"workingNode4"},
+ [["p", {}, []],
+  ["dijit.layout.ContentPane",
+   {style:{width:"300px",height:"300px",backgroundColor:"red"}},
+   []]]];
+var tree5 =
+["div", {id:"workingNode5"},
+ [["p", {}, []],
+  ["dijit.layout.ContentPane",
+   {"class":"box"},
+   []]]];
+var tree6 =
+["div", {id:"workingNode6"},
+ [["p", {}, []],
+  ["dijit.layout.ContentPane",
+   {style:{width:"300px",height:"140px",backgroundColor:"red"}},
+   [["div", {},
+     [["dijit.layout.ContentPane",
        {"class":"box"},
-       []]]];
-    var tree6 =
-    ["div", {id:"workingNode6"},
-     [["p", {}, []],
-      ["dijit.layout.ContentPane",
-       {style:{width:"300px",height:"140px",backgroundColor:"red"}},
-       [["div", {},
-	 [["dijit.layout.ContentPane",
-	   {"class":"box"},
-	   [["div", {}, []]]]]]]]]];
-    // tree6b does not work: ContentPane has no 'addChild' method.
-    var tree6b =
-    ["div", {id:"workingNode6b"},
-     [["p", {}, []],
-      ["dijit.layout.ContentPane",
-       {style:{width:"300px",height:"140px",backgroundColor:"red"}},
-       [["dijit.layout.ContentPane",
-	 {"class":"box"},
-	 [["div", {}, []]]]]]]];
-    var tree7 =
-    ["dijit.layout.AccordionContainer",
-     {id:"workingNode7",
-      style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
-     [["dijit.layout.AccordionPane",
-       {id:"insideWorkingNode",title:"pane 1"},
-       []],
-      ["dijit.layout.AccordionPane",
-       {id:"cp1",title:"pane 2"},
-       []]]];
-    var tree8 =
-    ["dijit.layout.AccordionContainer",
-     {id:"workingNode8",
-      style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
-     [["dijit.layout.ContentPane",
-       {title:"pane 1"},
-       []]]];
-    var tree9 =
-    ["div", {id:"workingNode9"},
-     [["dijit.layout.AccordionContainer",
-       {style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
-       [["dijit.layout.AccordionPane",
-	 {title:"pane 1"},
-	 [["div", {style:{width:"100%",height:"140px",
-			  backgroundColor:"orange"}}, []]]],
-	["dijit.layout.AccordionPane",
-	 {title:"pane 2"},
-	 [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
-	   []]]]]]]];
-    var tree10 =
-    ["div", {id:"workingNode10"},
-     [["dijit.layout.AccordionContainer",
-       {style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
-       [["dijit.layout.ContentPane",
-	 {title:"pane 1"},
-	 [["div", {style:{width:"100%",height:"140px",
-			  backgroundColor:"orange"}}, []]]],
-	["dijit.layout.ContentPane",
-	 {title:"pane 2"},
-	 [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
-	   []]]]]]]];
-    var tree11 =
-    ["div", {id:"workingNode11"},
-     [["dijit.layout.AccordionContainer",
-       {id:"ac0",style:{width:"100%",height:"400px",backgroundColor:"yellow"}},
-       [["dijit.layout.ContentPane",
-	 {id:"cp00",title:"pane 1"},
-	 [["div", {id:"d000",style:{width:"100%",height:"140px",
-			  backgroundColor:"orange"}},
-	   [["dijit.layout.AccordionContainer",
-	     {id:"ac0000",
-	      style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
-	     [["dijit.layout.ContentPane",
-	       {id:"cp00000",title:"pane 1"},
-	       [["div", {id:"cp000000",style:{width:"100%",height:"140px",
-					      backgroundColor:"orange"}}, []]]],
-	      ["dijit.layout.ContentPane",
-	       {id:"cp00001",title:"pane 2"},
-	       [["div", {id:"d000000",style:{width:"100%",height:"140px",
-					     backgroundColor:"red"}},
-		 []]]]]]]]]],
-	["dijit.layout.ContentPane",
-	 {id:"cp01",title:"pane 2"},
-	 [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
-	   []]]]]]]];
-    var tree12 =
-    ["dijit.layout.AccordionContainer",
-     {id:"workingNode12",
-      style:{width:"100%",height:"400px",backgroundColor:"yellow"}},
-     [["dijit.layout.ContentPane",
-       {id:"cp00",title:"pane 1"},
-       [["div", {id:"d000",style:{width:"100%",height:"140px",
-				  backgroundColor:"orange"}},
-	 [["dijit.layout.AccordionContainer",
-	   {id:"ac0000",
-	    style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
-	   [["dijit.layout.ContentPane",
-	     {id:"cp00000",title:"pane 1"},
-	     [["div", {id:"cp000000",style:{width:"100%",height:"140px",
-					    backgroundColor:"orange"}}, []]]],
-	    ["dijit.layout.ContentPane",
-	     {id:"cp00001",title:"pane 2"},
-	     [["div", {id:"d000000",style:{width:"100%",height:"140px",
-					   backgroundColor:"red"}},
-	       []]]]]]]]]],
-      ["dijit.layout.ContentPane",
-       {id:"cp01",title:"pane 2"},
-       [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
-	 []]]]]];
-    var devTools =
-    ["dojox.layout.FloatingPane",
-     {id:"workingNodeDT",
-      title:"Main Controls",style:{bottom:"30px",right:"30px"},closable:true},
-     [["center", {},
-       [["dijit.form.Button",
-	 {label:"Clear the Canvas",onClick:zen.clearTheCanvas}, []],
-	["br", {}, []],
-	["dijit.form.Button",
-	 {label:"Clear the Canvas",onClick:sayHello}, []],
-	["br", {}, []],
-	["dijit.form.Button",
-	 {label:"Clear the Canvas",onClick:sayHello}, []],
-	["br", {}, []],
-	["dijit.form.Button",
-	 {label:"Clear the Canvas",onClick:sayHello}, []],
-	["br", {}, []],
-	["dijit.form.Button",
-	 {label:"Clear the Canvas",onClick:sayHello}, []],
-	["br", {}, []],
-	["dijit.form.Button",
-	 {label:"Clear the Canvas",onClick:sayHello}, []]]]]];
-    var underlay =
-    ["dijit.DialogUnderlay",
-     {id:"workingNodeUL",style:{width:"100%",height:"200px",
-			      backgroundColor:"lightgreen"}},
-     []];
-    var pane =
+       [["div", {}, []]]]]]]]]];
+// tree6b does not work: ContentPane has no 'addChild' method.
+var tree6b =
+["div", {id:"workingNode6b"},
+ [["p", {}, []],
+  ["dijit.layout.ContentPane",
+   {style:{width:"300px",height:"140px",backgroundColor:"red"}},
+   [["dijit.layout.ContentPane",
+     {"class":"box"},
+     [["div", {}, []]]]]]]];
+var tree7 =
+["dijit.layout.AccordionContainer",
+ {id:"workingNode7",
+  style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
+ [["dijit.layout.AccordionPane",
+   {id:"insideWorkingNode",title:"pane 1"},
+   []],
+  ["dijit.layout.AccordionPane",
+   {id:"cp1",title:"pane 2"},
+   []]]];
+var tree8 =
+["dijit.layout.AccordionContainer",
+ {id:"workingNode8",
+  style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
+ [["dijit.layout.ContentPane",
+   {title:"pane 1"},
+   []]]];
+var tree9 =
+["div", {id:"workingNode9"},
+ [["dijit.layout.AccordionContainer",
+   {style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
+   [["dijit.layout.AccordionPane",
+     {title:"pane 1"},
+     [["div", {style:{width:"100%",height:"140px",
+		      backgroundColor:"orange"}}, []]]],
+    ["dijit.layout.AccordionPane",
+     {title:"pane 2"},
+     [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
+       []]]]]]]];
+var tree10 =
+["div", {id:"workingNode10"},
+ [["dijit.layout.AccordionContainer",
+   {style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
+   [["dijit.layout.ContentPane",
+     {title:"pane 1"},
+     [["div", {style:{width:"100%",height:"140px",
+		      backgroundColor:"orange"}}, []]]],
     ["dijit.layout.ContentPane",
-     {id:"workingNodeCP",style:{width:"100%",height:"200px",
-			      backgroundColor:"lightgreen"}},
-     []];
-    //var newTree; //FIXME: Remove this.
-    var newCompons = [];
-    var canvas = createNew(zen.TreeCompons);
+     {title:"pane 2"},
+     [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
+       []]]]]]]];
+var tree11 =
+["div", {id:"workingNode11"},
+ [["dijit.layout.AccordionContainer",
+   {id:"ac0",style:{width:"100%",height:"400px",backgroundColor:"yellow"}},
+   [["dijit.layout.ContentPane",
+     {id:"cp00",title:"pane 1"},
+     [["div", {id:"d000",style:{width:"100%",height:"140px",
+				backgroundColor:"orange"}},
+       [["dijit.layout.AccordionContainer",
+	 {id:"ac0000",
+	  style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
+	 [["dijit.layout.ContentPane",
+	   {id:"cp00000",title:"pane 1"},
+	   [["div", {id:"cp000000",style:{width:"100%",height:"140px",
+					  backgroundColor:"orange"}}, []]]],
+	  ["dijit.layout.ContentPane",
+	   {id:"cp00001",title:"pane 2"},
+	   [["div", {id:"d000000",style:{width:"100%",height:"140px",
+					 backgroundColor:"red"}},
+	     []]]]]]]]]],
+    ["dijit.layout.ContentPane",
+     {id:"cp01",title:"pane 2"},
+     [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
+       []]]]]]]];
+var tree12 =
+["dijit.layout.AccordionContainer",
+ {id:"workingNode12",
+  style:{width:"100%",height:"400px",backgroundColor:"yellow"}},
+ [["dijit.layout.ContentPane",
+   {id:"cp02",title:"pane 1"},
+   [["div", {id:"d001",style:{width:"100%",height:"140px",
+			      backgroundColor:"orange"}},
+     [["dijit.layout.AccordionContainer",
+       {id:"ac0001",
+	style:{width:"100%",height:"160px",backgroundColor:"yellow"}},
+       [["dijit.layout.ContentPane",
+	 {id:"cp00002",title:"pane 1"},
+	 [["div", {id:"cp000001",style:{width:"100%",height:"140px",
+					backgroundColor:"orange"}}, []]]],
+	["dijit.layout.ContentPane",
+	 {id:"cp00003",title:"pane 2"},
+	 [["div", {id:"d000000",style:{width:"100%",height:"140px",
+				       backgroundColor:"red"}},
+	   []]]]]]]]]],
+  ["dijit.layout.ContentPane",
+   {id:"cp01",title:"pane 2"},
+   [["div", {style:{width:"100%",height:"140px",backgroundColor:"red"}},
+     []]]]]];
+var devTools =
+["dojox.layout.FloatingPane",
+ {id:"workingNodeDT",
+  title:"Main Controls",style:{bottom:"30px",right:"30px"},closable:true},
+ [["center", {},
+   [["dijit.form.Button",
+     {label:"Clear the Canvas",onClick:zen.clearTheCanvas}, []],
+    ["br", {}, []],
+    ["dijit.form.Button",
+     {label:"Clear the Canvas",onClick:sayHello}, []],
+    ["br", {}, []],
+    ["dijit.form.Button",
+     {label:"Clear the Canvas",onClick:sayHello}, []],
+    ["br", {}, []],
+    ["dijit.form.Button",
+     {label:"Clear the Canvas",onClick:sayHello}, []],
+    ["br", {}, []],
+    ["dijit.form.Button",
+     {label:"Clear the Canvas",onClick:sayHello}, []],
+    ["br", {}, []],
+    ["dijit.form.Button",
+     {label:"Clear the Canvas",onClick:sayHello}, []]]]]];
+var underlay =
+["dijit.DialogUnderlay",
+ {id:"workingNodeUL",style:{width:"100%",height:"200px",
+			    backgroundColor:"lightgreen"}},
+ []];
+var pane =
+["dijit.layout.ContentPane",
+ {id:"workingNodeCP",style:{width:"100%",height:"200px",
+			    backgroundColor:"lightgreen"}},
+ []];
 
-     //FIXME: Have to think about the use of the same id
-     //(e.g. 'workingNode') for many elements. Note that deleting a
-     //tree should remove the conflicting element, so trying to delete
-     //a tree and add it or another using the same id would be a good
-     //test.
-    test = function(tree) {
-	var diagram, newTree;
+var newCompons = [];
+var canvas = createNew(zen.TreeCompons);
 
-	zen.info("* Testing creation and diagramming of a tree");
 
-	newTree = zen.renderTree(tree, zen.body);
-	if(d>1)zen.dir(newTree);
-	newCompons =
-	    canvas.domNodeCompons.concat(
-		newTree.treeCompons.domNodeCompons);
-	newCompons.concat(
-	    canvas.widgets.concat(
-		newTree.treeCompons.widgets));
-	//diagram = zen.diagramTree(newCompons);
-	diagram = zen.diagramTree(newTree.rootCompon);
-	zen.info("* Done testing creation and rendering of a tree");
-    };
-
-    clearTheTestRendering = function() {
-	if(d>0)zen.group("clearTheTestRendering: newCompons");
-	if(d>0)zen.dir(newCompons);
-	if(d>0)zen.groupEnd();
-	//return;
-	zen.clearTheCanvas(newCompons);
-    };
-
-    /*
-    clearTheCanvas = function() {
- 	componsToDestroy = canvas.domNodeCompons.concat(canvas.widgets);
-	zen.info("componsToDestroy.length => " + componsToDestroy.length);
-	zen.clearTheCanvas(
-	    canvas.domNodeCompons.concat(
-		canvas.widgets));
-	canvas = createNew(zen.TreeCompons);
-    };
-    */
+//FIXME: Have to think about the use of the same id
+ //(e.g. 'workingNode') for many elements. Note that deleting a
+ //tree should remove the conflicting element, so trying to delete
+ //a tree and add it or another using the same id would be a good
+ //test.
+test = function(tree) {
+    var diagram, newTree;
+    zen.info("* Testing creation and diagramming of a tree");
+    newTree = zen.renderTree(tree, zen.body);
+    newTree.doNotDelete = false;
+    zen.Tree.allTrees.push(newTree);
+    if(d>4)zen.dir(newTree);
+    diagram = zen.diagramTree(newTree.rootCompon);
+    zen.info("* Done testing creation and rendering of a tree");
+};
+    
+clearTheTestRendering = function() {
+    dojo.forEach(zen.Tree.allTrees,
+		 function(zenTree) {
+		     if(d>4)zen.dir(zenTree);
+		     if (!zenTree.doNotDelete) {
+			 zenTree.rootCompon.destroyCompon();
+		     };
+		 });
+};
 
 
 ////
@@ -267,8 +261,8 @@
 testInit = function() {
     //FIXME: This version of toolbox is just for testing. Think of a
     //way it can be kept for regression testing.
-    var toolboxTree;
-    var toolbox =
+    var toolboxTree, componsToSave,
+	toolbox =
     ["dojox.layout.FloatingPane",
      {id:"testRendering",
       title:"Rendering Tests",style:{top:"30px",right:"30px"},closable:true},
@@ -345,10 +339,14 @@ testInit = function() {
 	["br", {}, []],
 	["dijit.form.Button",
 	 {label:"Main Controls",onClick:function(){test(devTools)}}, []]]]]];
+    dojo.require("zen.object");
     zen.initIRT();
     zen.body = createNew(zen.DomNodeCompon, dojo.body());
     if(d>4)zen.debug("zen.body => " + zen.body + 
 	      ", zen.body.domNode => " + zen.body.domNode);
     toolboxTree = zen.renderTree(toolbox, zen.body);
+    toolboxTree.doNotDelete = true;
+    zen.Tree.allTrees.push(toolboxTree);
+    newCompons = null;
     d = 1;
 };
