@@ -1,19 +1,18 @@
-dojo.provide("zen.tests.createCompon");
+dojo.provide("zen.tests.component");
 
 
-// Test Zen element creation.
+// Test Zen generic-component creation.
 
-tests.register("zen.tests.createCompon", [
+tests.register("zen.tests.component", [
     {
 	name: "Create a DIV HTML element with width, height, & colour",
 	setUp: function() {
-	    console.debug("Requiring zen.createCompon");
-	    dojo.require("zen.compon");
+	    dojo.require("zen.component");
 	},
 	runTest: function(){
-	    var compon = zen.createElement(
-		"div",
-		{style:{width:"100px",height:"50px",backgroundColor:"red"}});
+	    var compon = zen.createCompon(
+		["div",
+		 {style:{width:"100px",height:"50px",backgroundColor:"red"}}]);
 	    doh.assertNotEqual(compon, "undefined");
 	    doh.assertNotEqual(compon.domNode, "[object HTMLUnknownElement]");
 	    doh.assertEqual(dojo.style(compon.domNode,"width"), 100);
@@ -25,9 +24,7 @@ tests.register("zen.tests.createCompon", [
     {
 	name: "Create a DIV HTML element with width, height, colour, & id",
 	setUp: function() {
-	    console.debug("Requiring zen.createCompon");
-	    dojo.require("zen.compon");
-	    d=5;
+	    dojo.require("zen.component");
 	},
 	runTest: function(){
 	    var compon = zen.createElement(

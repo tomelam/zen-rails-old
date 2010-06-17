@@ -1,28 +1,4 @@
-console.debug("Providing zen.compon");
-dojo.provide("zen.compon");
-
-
-
-////
-//// DEBUGGING FACILITIES
-////
-//// Debug Levels, by Convention Only
-//// 0 = off
-//// 1 = group, groupEnd, dir (maybe these should be 5)
-//// 2 = error
-//// 3 = warn
-//// 4 = info
-//// 5 = debug
-//// 6 = log
-var d = 0; // Off.
-zen.log = console.log;
-zen.debug = console.debug;
-zen.info = console.info;
-zen.warn = console.warn;
-zen.error = console.error;
-zen.group = console.group;
-zen.groupEnd = console.groupEnd;
-zen.dir = console.dir;
+dojo.provide("zen.component");
 
 
 ////
@@ -73,17 +49,6 @@ zen.rulesTable = {
 // initIRT.
 zen.invertedRulesTable = {};
 
-zen.initIRT = function() {
-    var components, c, rule, len;
-    for (rule in zen.rulesTable) {
-	components = zen.rulesTable[rule];
-	len = components.length;
-	for (c=0; c<len; c++) {
-	    zen.invertedRulesTable[components[c]] = rule;
-	};
-    };
-};
-
 // FIXME: eval is not cool here. FaceBook and MySpace, for
 // example, won't allow it in included JavaScript. See
 // http://www.dojotoolkit.org/reference-guide/dojo/_base/json.html
@@ -107,3 +72,15 @@ zen.shortcutsTable = {
     createTextNode : document.createTextNode,
     createDijit : zen.createDijit
 };
+
+zen.initIRT = function() {};
+(function() {
+    var components, c, rule, len;
+    for (rule in zen.rulesTable) {
+	components = zen.rulesTable[rule];
+	len = components.length;
+	for (c=0; c<len; c++) {
+	    zen.invertedRulesTable[components[c]] = rule;
+	};
+    };
+})();

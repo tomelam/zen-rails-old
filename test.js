@@ -204,19 +204,15 @@ var canvas = createNew(zen.TreeCompons);
  //test.
 test = function(tree) {
     var diagram, newTree;
-    zen.info("* Testing creation and diagramming of a tree");
     newTree = zen.renderTree(tree, zen.body);
     newTree.doNotDelete = false;
     zen.Tree.allTrees.push(newTree);
-    if(d>4)zen.dir(newTree);
     diagram = zen.diagramTree(newTree.rootCompon);
-    zen.info("* Done testing creation and rendering of a tree");
 };
     
 clearTheTestRendering = function() {
     dojo.forEach(zen.Tree.allTrees,
 		 function(zenTree) {
-		     if(d>4)zen.dir(zenTree);
 		     if (!zenTree.doNotDelete) {
 			 zenTree.rootCompon.destroyCompon();
 		     };
@@ -312,11 +308,8 @@ testInit = function() {
     dojo.require("zen.object");
     zen.initIRT();
     zen.body = createNew(zen.DomNodeCompon, dojo.body());
-    if(d>4)zen.debug("zen.body => " + zen.body + 
-	      ", zen.body.domNode => " + zen.body.domNode);
     toolboxTree = zen.renderTree(toolbox, zen.body);
     toolboxTree.doNotDelete = true;
     zen.Tree.allTrees.push(toolboxTree);
     newCompons = null;
-    d = 1;
 };
