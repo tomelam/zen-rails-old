@@ -5,7 +5,7 @@ dojo.provide("zen.tests.object");
 
 tests.register("zen.tests.object", [
     {
-	name: "Test privacy of a private variable (in a type-two Zen object)",
+	name: "Privacy of a private variable",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo1 = function() {
@@ -18,7 +18,7 @@ tests.register("zen.tests.object", [
 	}
     },
     {
-	name: "Test accessor for a private variable (in a type-one Zen object)",
+	name: "Accessor for a private variable",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo2 = function() {
@@ -39,7 +39,7 @@ tests.register("zen.tests.object", [
 	}
     },
     {
-	name: "Test access to a public variable (in a type-two Zen object)",
+	name: "Access to a public variable",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo3 = function() {
@@ -52,7 +52,7 @@ tests.register("zen.tests.object", [
 	}
     },
     {
-	name: "Test a Zen object constructor with 1 argument",
+	name: "Zen object constructor with 1 argument",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo4 = function(arg1) {

@@ -1,3 +1,8 @@
+console.debug("Providing zen.compon");
+dojo.provide("zen.compon");
+
+
+
 ////
 //// DEBUGGING FACILITIES
 ////

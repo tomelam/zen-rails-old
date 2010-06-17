@@ -1,9 +1,8 @@
-if (dojo) {
-    console.debug("Providing zen.createTree");
-    dojo.provide("zen.createTree");
-} else {
-    console.debug("No dojo!");
-};
+console.debug("Providing zen.createTree");
+dojo.provide("zen.createTree");
+dojo.registerModulePath("zen", "../../../zen");
+dojo.require("zen.compon");
+
 
 
 var zen = {};
