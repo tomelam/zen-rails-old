@@ -1,7 +1,7 @@
 dojo.provide("zen.tests.object");
 
 
-// Test instantiation of a class having a private variable.
+// Test Zen object creation.
 
 tests.register("zen.tests.object", [
     {
