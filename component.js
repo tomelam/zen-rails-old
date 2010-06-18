@@ -1,4 +1,5 @@
 dojo.provide("zen.component");
+dojo.require("zen.element"); //FIXME: Find out why not inside createCompon.
 
 
 ////

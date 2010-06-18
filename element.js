@@ -99,6 +99,7 @@ zen.DomNodeCompon.fromDomNode = function (node) {
 //
 // FIXME: Can text nodes have attributes?
 zen.createTextNode = function(text, attributes) {
+    dojo.require("zen.object");
     var domNodeCompon = createNew(zen.DomNodeCompon);
     // FIXME: Use dojo.create, if appropriate.
     var domNode = document.createTextNode(text);
@@ -109,6 +110,7 @@ zen.createTextNode = function(text, attributes) {
 //FIXME: compon.toString() prints "[object HTMLSpanElement]" for the
 //CENTER element.
 zen.createElement = function(kind, attributes) {
+    dojo.require("zen.object");
     var domNodeCompon = createNew(zen.DomNodeCompon);
     if (attributes && attributes.id) {
 	/*FIXME: Revisit this. Currently it would cause a test to fail

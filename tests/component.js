@@ -7,6 +7,7 @@ tests.register("zen.tests.component", [
     {
 	name: "Create a DIV HTML element with width, height, & colour",
 	setUp: function() {
+	    //dojo.require("zen.element");
 	    dojo.require("zen.component");
 	},
 	runTest: function(){
@@ -37,6 +38,25 @@ tests.register("zen.tests.component", [
 	    doh.assertEqual(dojo.style(compon.domNode,"height"), 50);
 	    doh.assertEqual(dojo.style(compon.domNode,"backgroundColor"),
 			    "rgb(255, 0, 0)");
+	}
+    },
+    {
+	name: "Create a DIV inside a DIV, each DIV having attributes",
+	setUp: function() {
+	    dojo.require("zen.component");
+	},
+	runTest: function(){
+	    var compon = zen.createCompon(
+		["div", {id:"workingNode2",
+			 style:{width:"200px",height:"50px",
+				backgroundColor:"red"}},
+		 [["div", {id:"workingNode2b",
+           style:{width:"180px",height:"180px",backgroundColor:"orange"},
+           title:"Title 1"}, []]]]);
+	    doh.assertNotEqual(compon, "undefined");
+	    doh.assertNotEqual(compon.domNode, "[object HTMLUnknownElement]");
+	    doh.assertEqual(dojo.style(compon.domNode,"width"), 200);
+	    doh.assertEqual(dojo.style(compon.domNode,"height"), 50);
 	    doh.assertEqual(dojo.style(compon.domNode,"backgroundColor"),
 			    "rgb(255, 0, 0)");
 	}
