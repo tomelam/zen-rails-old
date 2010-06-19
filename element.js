@@ -1,4 +1,7 @@
 dojo.provide("zen.element");
+console.debug("Providing zen.element");
+
+//zen = {};
 
 
 ////
@@ -92,21 +95,6 @@ zen.DomNodeCompon.fromDomNode = function (node) {
     return null;
 };
 
-// Create a component that refers to an HTML text node or HTML
-// element. This avoids some conflict with Dojo that results when
-// trying to use prototype.js to add methods to an element. It also is
-// more future proof since an element can be handled in a clean way.
-//
-// FIXME: Can text nodes have attributes?
-zen.createTextNode = function(text, attributes) {
-    dojo.require("zen.object");
-    var domNodeCompon = createNew(zen.DomNodeCompon);
-    // FIXME: Use dojo.create, if appropriate.
-    var domNode = document.createTextNode(text);
-    domNodeCompon.domNode = domNode;
-    return domNodeCompon;
-};
-
 //FIXME: compon.toString() prints "[object HTMLSpanElement]" for the
 //CENTER element.
 zen.createElement = function(kind, attributes) {
@@ -134,3 +122,21 @@ zen.createElement = function(kind, attributes) {
     domNodeCompon.domNode = domNode;
     return domNodeCompon;
 };
+console.debug("zen.createElement => " + zen.createElement +
+	      ", typeof zen.createElement => " + typeof zen.createElement);
+
+// Create a component that refers to an HTML text node or HTML
+// element. This avoids some conflict with Dojo that results when
+// trying to use prototype.js to add methods to an element. It also is
+// more future proof since an element can be handled in a clean way.
+//
+// FIXME: Can text nodes have attributes?
+zen.createTextNode = function(text, attributes) {
+    dojo.require("zen.object");
+    var domNodeCompon = createNew(zen.DomNodeCompon);
+    // FIXME: Use dojo.create, if appropriate.
+    var domNode = document.createTextNode(text);
+    domNodeCompon.domNode = domNode;
+    return domNodeCompon;
+};
+console.debug("Provided zen.element");

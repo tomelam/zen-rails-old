@@ -11,6 +11,7 @@ zen.createCompon = function(treeSpec) {
 	componKind = treeSpec[0],
 	rule = zen.invertedRulesTable[componKind],        
 	initParms = treeSpec[1];
+    //dojo.require("zen.element");
     constructor = zen.rule2ref(rule);
     return constructor.call(document, componKind, initParms);
 };
@@ -49,39 +50,49 @@ zen.rulesTable = {
 // name as a key. We fill it up by immediately calling
 // initIRT.
 zen.invertedRulesTable = {};
-
-// FIXME: eval is not cool here. FaceBook and MySpace, for
+// Get a reference to a prototype function, given a rule.
+//
+// NOTE: Eval would not be cool here. FaceBook and MySpace, for
 // example, won't allow it in included JavaScript. See
-// http://www.dojotoolkit.org/reference-guide/dojo/_base/json.html
-// for a safe way to evaluate JSON strings.
+// http://www.dojotoolkit.org/reference-guide/dojo/_base/json.html for
+// a safe way to evaluate JSON strings.
+//
+// Get a reference in place of the argument, which is, or will be
+// immediately converted to, a string. The dojo.fromJson()
+// function safely evaluates the string and produces a JavaScript
+// reference to a function. (The JavaScript function eval()
+// could do the same thing as dojo.fromJson(), but not safely:
+// it will execute arbitrary code, not just JSON code.)
 zen.rule2ref = function(rule) {
-    var s;
-    for (s in zen.shortcutsTable) {
-	if (s == rule) {
-	    //return eval(zen.shortcutsTable[rule]);
+    var shortcut;
+    // First, look for the rule in the table of shortcuts.
+    for (shortcut in zen.shortcutsTable) {
+	if (shortcut == rule) {
+	    // Found it! Use it to get a long-form reference.
 	    return dojo.fromJson(zen.shortcutsTable[rule]);
 	}
-    }
-    //return eval(rule);
-    return dojo.fromJson(rule)
+    };
+    // The rule is not in the table of shortcuts. Just evaluate the
+    // string (safely) to get a reference in place of the string.
+    return dojo.fromJson(rule);
 };
 
 // These shortcuts make it easy to specify methods for creating
 // various kinds of components.
 zen.shortcutsTable = {
     createElement : zen.createElement,
-    createTextNode : document.createTextNode,
+    createTextNode : zen.createTextNode, //FIXME: document.createTextNode?
     createDijit : zen.createDijit
 };
 
 zen.initIRT = function() {};
 (function() {
-    var components, c, rule, len;
+    var components, index, rule, len;
     for (rule in zen.rulesTable) {
 	components = zen.rulesTable[rule];
 	len = components.length;
-	for (c=0; c<len; c++) {
-	    zen.invertedRulesTable[components[c]] = rule;
+	for (index=0; index<len; index++) {
+	    zen.invertedRulesTable[components[index]] = rule;
 	};
     };
 })();
