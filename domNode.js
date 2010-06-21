@@ -1,7 +1,9 @@
-dojo.provide("zen.element");
-console.debug("Providing zen.element");
+dojo.provide("zen.domNode");
 
-//zen = {};
+
+if (typeof zen == "undefined") {
+    var zen = {};
+};
 
 
 ////
@@ -122,8 +124,6 @@ zen.createElement = function(kind, attributes) {
     domNodeCompon.domNode = domNode;
     return domNodeCompon;
 };
-console.debug("zen.createElement => " + zen.createElement +
-	      ", typeof zen.createElement => " + typeof zen.createElement);
 
 // Create a component that refers to an HTML text node or HTML
 // element. This avoids some conflict with Dojo that results when
@@ -139,4 +139,3 @@ zen.createTextNode = function(text, attributes) {
     domNodeCompon.domNode = domNode;
     return domNodeCompon;
 };
-console.debug("Provided zen.element");

@@ -5,7 +5,7 @@ dojo.provide("zen.tests.object");
 
 tests.register("zen.tests.object", [
     {
-	name: "Privacy of a private variable",
+	name: "1. Privacy of a private variable",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo1 = function() {
@@ -13,12 +13,12 @@ tests.register("zen.tests.object", [
 	    };
 	    foo1 = createNew(Foo1);
 	},
-	runTest: function(){
+	runTest: function() {
 	    doh.assertEqual(String(foo1.pvtVar), "undefined");
 	}
     },
     {
-	name: "Accessor for a private variable",
+	name: "2. Accessor for a private variable",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo2 = function() {
@@ -34,12 +34,12 @@ tests.register("zen.tests.object", [
 	    };
 	    foo2 = createNew(Foo2);
 	},
-	runTest: function(){
+	runTest: function() {
 	    doh.assertEqual(foo2.getPvtVar(), 1);
 	}
     },
     {
-	name: "Access to a public variable",
+	name: "3. Access to a public variable",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo3 = function() {
@@ -47,12 +47,12 @@ tests.register("zen.tests.object", [
 	    };
 	    foo3 = createNew(Foo3);
 	},
-	runTest: function(){
+	runTest: function() {
 	    doh.assertEqual(foo3.publicVar, 3);
 	}
     },
     {
-	name: "Zen object constructor with 1 argument",
+	name: "4. Zen object constructor with 1 argument",
 	setUp: function() {
 	    dojo.require("zen.object");
 	    Foo4 = function(arg1) {
@@ -60,7 +60,7 @@ tests.register("zen.tests.object", [
 	    };
 	    foo4 = createNew(Foo4, 4);
 	},
-	runTest: function(){
+	runTest: function() {
 	    doh.assertEqual(foo4.publicVar, 4);
 	}
     }

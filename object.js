@@ -41,7 +41,7 @@ function createNew() {
     
     // Step 1: Create a new empty object instance linked to the
     //         prototype of provided constructor.
-    var hiddenLink = function(){};
+    var hiddenLink = function() {};
     hiddenLink.prototype = constructor.prototype;
     // CORRECTED: 'object' was 'instance'.
     var object = new hiddenLink(); // cheat: use new to implement new

@@ -1,5 +1,12 @@
 dojo.provide("zen.component");
-dojo.require("zen.element"); //FIXME: Find out why not inside createCompon.
+dojo.require("zen.object");
+dojo.require("zen.domNode"); //FIXME: Find out why not inside createCompon.
+dojo.require("zen.dojoWidget");
+
+
+if (typeof zen == "undefined") {
+    var zen = {};
+};
 
 
 ////
@@ -13,6 +20,7 @@ zen.createCompon = function(treeSpec) {
 	initParms = treeSpec[1];
     //dojo.require("zen.element");
     constructor = zen.rule2ref(rule);
+    console.debug("zen.createCompon: constructor => " + constructor);
     return constructor.call(document, componKind, initParms);
 };
 
@@ -43,7 +51,7 @@ zen.rulesTable = {
 		      "dijit.form.Button",
 		      "dojox.layout.FloatingPane" //FIXME: deprecated
 		    ],
-    createTextNode : [ "text" ]
+    createTextNode: [ "text" ]
 };
 
 // This is a table for looking up a rule given a component
@@ -65,6 +73,7 @@ zen.invertedRulesTable = {};
 // it will execute arbitrary code, not just JSON code.)
 zen.rule2ref = function(rule) {
     var shortcut;
+    console.debug("zen.rule2ref(" + dojo.toJson(rule) + ")");
     // First, look for the rule in the table of shortcuts.
     for (shortcut in zen.shortcutsTable) {
 	if (shortcut == rule) {
@@ -80,12 +89,11 @@ zen.rule2ref = function(rule) {
 // These shortcuts make it easy to specify methods for creating
 // various kinds of components.
 zen.shortcutsTable = {
-    createElement : zen.createElement,
+    createElement  : zen.createElement,
     createTextNode : zen.createTextNode, //FIXME: document.createTextNode?
-    createDijit : zen.createDijit
+    createDijit    : zen.createDojoWidget
 };
 
-zen.initIRT = function() {};
 (function() {
     var components, index, rule, len;
     for (rule in zen.rulesTable) {
@@ -96,3 +104,5 @@ zen.initIRT = function() {};
 	};
     };
 })();
+
+zen.body = createNew(zen.DomNodeCompon, dojo.body());

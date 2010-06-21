@@ -38,16 +38,17 @@ zen.renderTree = function(treeSpec, parent) {
     var zenTree;
     zenTree = zen.createTree(treeSpec);
     zenTree.rootCompon.appendMyselfToParent(parent);
-    zen.startup(zenTree.treeCompons.widgets);
+    zen.dojoWidget.startup(zenTree.treeCompons.widgets);
     return zenTree;
 };
 
 var recursion = 0;
 //var transitoryTrees = createNew(zen.Tree);
 zen.createTree = function(treeSpec) {
-    //dojo.require("zen.component");
+    console.debug("zen.createCompon([" + dojo.toJson(treeSpec[0]) + ", " +
+		  dojo.toJson(treeSpec[1]) + "])");
     var index, newCompon, newSubtree,
-        rootCompon = zen.createCompon(treeSpec),
+        rootCompon = zen.createCompon([treeSpec[0], treeSpec[1]]),
 	treeCompons = createNew(zen.TreeCompons),
         zenTree = createNew(zen.Tree);
     recursion += 1;

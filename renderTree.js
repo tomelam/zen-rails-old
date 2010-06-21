@@ -1,10 +1,4 @@
-if (dojo) {
-    console.debug("Providing zen.renderTree");
-    dojo.provide("zen.renderTree");
-} else {
-    console.debug("No dojo!");
-};
-
+dojo.provide("zen.renderTree");
 dojo.require("zen.createTree");
 
 
@@ -23,7 +17,7 @@ zen.renderTree = function(treeSpec, parent) {
     if(d>4)zen.group("renderTree: Appended new zenTree to parent");
     if(d>4)zen.dir(zenTree);
     if(d>4)zen.groupEnd();
-    zen.startup(zenTree.treeCompons.widgets);
+    zen.dojoWidget.startup(zenTree.treeCompons.widgets);
     if(d>4)zen.info("##### EXIT: zen.renderTree #####");
     return zenTree;
 };

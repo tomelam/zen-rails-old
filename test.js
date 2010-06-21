@@ -306,7 +306,6 @@ testInit = function() {
 	["dijit.form.Button",
 	 {label:"Main Controls",onClick:function(){test(devTools)}}, []]]]]];
     dojo.require("zen.object");
-    zen.initIRT();
     zen.body = createNew(zen.DomNodeCompon, dojo.body());
     toolboxTree = zen.renderTree(toolbox, zen.body);
     toolboxTree.doNotDelete = true;
