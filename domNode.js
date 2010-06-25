@@ -3,11 +3,10 @@ dojo.require("zen.rulesDB");
 
 //FIXME: Move all dojo.require calls here, after checking that every
 //function herein needs them.
-
-
 ////
 //// DOM NODE HANDLING
 ////
+
 zen.DomNodeCompon = function(element) {
     this.domNode = element;
     this.stringRep = "[zen.DomNodeCompon " + this.domNode + "]";

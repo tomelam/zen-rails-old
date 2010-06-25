@@ -2,17 +2,17 @@ if (dojo) {
     dojo.provide("zen.object");
 };
 
-// Simplification and consolidation of a simulated 'new' operator
-// as given in Chapter 5 of _JavaScript: The Good Parts_, by
-// Douglas Crockford. Courtesy of Eric Bréchemier (on
-// stackoverflow.com; see http://bit.ly/9PiU5W). I have made
-// significant corrections and added arguments to the constructor.
-//
-// This function is not just for educational purposes: it allows
-// any kind of object to be created in a more functional way than
-// the 'new' operator allows, because it allows the object's
-// constructor to be passed to a function and then called there to
-// create the new object.
+//// Simplification and consolidation of a simulated 'new' operator
+//// as given in Chapter 5 of _JavaScript: The Good Parts_, by
+//// Douglas Crockford. Courtesy of Eric Bréchemier (on
+//// stackoverflow.com; see http://bit.ly/9PiU5W). I have made
+//// significant corrections and added arguments to the constructor.
+////
+//// This function is not just for educational purposes: it allows
+//// any kind of object to be created in a more functional way than
+//// the 'new' operator allows, because it allows the object's
+//// constructor to be passed to a function and then called there to
+//// create the new object.
 //
 // FIXME: Look around to see if Prototype or any other JavaScript
 // library provides similar functionality.

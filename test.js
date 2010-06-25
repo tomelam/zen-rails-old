@@ -207,7 +207,7 @@ test = function(tree) {
     newTree = zen.renderTree(tree, zen.body);
     newTree.doNotDelete = false;
     zen.Tree.allTrees.push(newTree);
-    diagram = zen.diagramTree(newTree.rootCompon);
+    //diagram = zen.diagramTree(newTree.rootCompon);
 };
     
 clearTheTestRendering = function() {

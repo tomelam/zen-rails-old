@@ -1,7 +1,6 @@
 dojo.provide("zen.dojoWidget");
 dojo.require("zen.rulesDB");
 
-
 ////
 //// DOJO WIDGET HANDLING
 ////

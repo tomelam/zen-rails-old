@@ -1,10 +1,10 @@
 dojo.provide("zen.rulesDB");
 dojo.require("zen.object");
 
+////
+//// RULES DATABASES
+////
 
-////
-//// GENERIC COMPONENT HANDLING
-////
 //FIXME: Use this function where useful.
 zen.createCompon = function(treeSpec) {
     var rule, constructor,
