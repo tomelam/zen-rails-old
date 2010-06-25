@@ -1,10 +1,5 @@
 dojo.provide("zen.rulesDB");
 dojo.require("zen.object");
-//dojo.require("zen.domNode"); //FIXME: Find out why not inside createCompon.
-//dojo.require("zen.dojoWidget");
-
-//FIXME: Probably this should not get into the details of zen.domNode
-//or zen.dojoWidget.
 
 
 ////
@@ -37,21 +32,6 @@ zen.walkZen = function(compon, func) {
 // (i.e. method) for creating a kind of component. The value
 // of each property is the set (an array) of the kinds of
 // component that can be created using the rule.
-/*
-zen.rulesTable = {
-    createElement : [ "div", "table", "tr", "td", "p", "span",
-		      "center", "br" ],
-    createDijit   : [ "dijit.layout.ContentPane",
-		      "dijit.layout.BorderContainer",
-		      "dijit.layout.AccordionContainer",
-		      "dijit.layout.AccordionPane", //FIXME: deprecated
-		      "dijit.DialogUnderlay",
-		      "dijit.form.Button",
-		      "dojox.layout.FloatingPane" //FIXME: deprecated
-		    ],
-    createTextNode: [ "text" ]
-};
-*/
 zen.rulesTable = {};
 zen.rulesTable.addRule = function(rule) {
     dojo.mixin(zen.rulesTable, rule);
@@ -93,30 +73,11 @@ zen.rule2ref = function(rule) {
 
 // These shortcuts make it easy to specify methods for creating
 // various kinds of components.
-/*
-zen.shortcutsTable = {
-    createElement  : zen.createElement,
-    createTextNode : zen.createTextNode, //FIXME: document.createTextNode?
-    createDijit    : zen.createDojoWidget
-};
-*/
 zen.shortcutsTable = {};
 zen.shortcutsTable.addShortcut = function(shortcut) {
     dojo.mixin(zen.shortcutsTable, shortcut);
 };
 
-/*
-(function() {
-    var components, index, rule, len;
-    for (rule in zen.rulesTable) {
-	components = zen.rulesTable[rule];
-	len = components.length;
-	for (index=0; index<len; index++) {
-	    zen.invertedRulesTable[components[index]] = rule;
-	};
-    };
-})();
-*/
 zen.invertedRulesTable.init = function() {
     var components, index, rule, len;
     for (rule in zen.rulesTable) {
@@ -127,5 +88,3 @@ zen.invertedRulesTable.init = function() {
 	};
     };
 };
-
-//zen.body = createNew(zen.DomNodeCompon, dojo.body());
