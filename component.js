@@ -1,12 +1,10 @@
 dojo.provide("zen.component");
 dojo.require("zen.object");
-dojo.require("zen.domNode"); //FIXME: Find out why not inside createCompon.
-dojo.require("zen.dojoWidget");
+//dojo.require("zen.domNode"); //FIXME: Find out why not inside createCompon.
+//dojo.require("zen.dojoWidget");
 
-
-if (typeof zen == "undefined") {
-    var zen = {};
-};
+//FIXME: Probably this should not get into the details of zen.domNode
+//or zen.dojoWidget.
 
 
 ////
@@ -16,11 +14,10 @@ if (typeof zen == "undefined") {
 zen.createCompon = function(treeSpec) {
     var rule, constructor,
 	componKind = treeSpec[0],
-	rule = zen.invertedRulesTable[componKind],        
+	rule = zen.invertedRulesTable[componKind],
 	initParms = treeSpec[1];
-    //dojo.require("zen.element");
     constructor = zen.rule2ref(rule);
-    console.debug("zen.createCompon: constructor => " + constructor);
+    //console.debug("zen.createCompon: constructor => " + constructor);
     return constructor.call(document, componKind, initParms);
 };
 
@@ -40,6 +37,7 @@ zen.walkZen = function(compon, func) {
 // (i.e. method) for creating a kind of component. The value
 // of each property is the set (an array) of the kinds of
 // component that can be created using the rule.
+/*
 zen.rulesTable = {
     createElement : [ "div", "table", "tr", "td", "p", "span",
 		      "center", "br" ],
@@ -52,6 +50,11 @@ zen.rulesTable = {
 		      "dojox.layout.FloatingPane" //FIXME: deprecated
 		    ],
     createTextNode: [ "text" ]
+};
+*/
+zen.rulesTable = {};
+zen.rulesTable.addRule = function(rule) {
+    dojo.mixin(zen.rulesTable, rule);
 };
 
 // This is a table for looking up a rule given a component
@@ -73,14 +76,16 @@ zen.invertedRulesTable = {};
 // it will execute arbitrary code, not just JSON code.)
 zen.rule2ref = function(rule) {
     var shortcut;
-    console.debug("zen.rule2ref(" + dojo.toJson(rule) + ")");
+    //console.debug("zen.rule2ref(" + dojo.toJson(rule) + ")");
     // First, look for the rule in the table of shortcuts.
     for (shortcut in zen.shortcutsTable) {
 	if (shortcut == rule) {
 	    // Found it! Use it to get a long-form reference.
+	    //console.debug("shortcut; returning " + zen.shortcutsTable[rule]);
 	    return dojo.fromJson(zen.shortcutsTable[rule]);
-	}
+	};
     };
+    //console.debug("no shortcut; returning " + rule);
     // The rule is not in the table of shortcuts. Just evaluate the
     // string (safely) to get a reference in place of the string.
     return dojo.fromJson(rule);
@@ -88,12 +93,19 @@ zen.rule2ref = function(rule) {
 
 // These shortcuts make it easy to specify methods for creating
 // various kinds of components.
+/*
 zen.shortcutsTable = {
     createElement  : zen.createElement,
     createTextNode : zen.createTextNode, //FIXME: document.createTextNode?
     createDijit    : zen.createDojoWidget
 };
+*/
+zen.shortcutsTable = {};
+zen.shortcutsTable.addShortcut = function(shortcut) {
+    dojo.mixin(zen.shortcutsTable, shortcut);
+};
 
+/*
 (function() {
     var components, index, rule, len;
     for (rule in zen.rulesTable) {
@@ -104,5 +116,16 @@ zen.shortcutsTable = {
 	};
     };
 })();
+*/
+zen.invertedRulesTable.init = function() {
+    var components, index, rule, len;
+    for (rule in zen.rulesTable) {
+	components = zen.rulesTable[rule];
+	len = components.length;
+	for (index=0; index<len; index++) {
+	    zen.invertedRulesTable[components[index]] = rule;
+	};
+    };
+};
 
-zen.body = createNew(zen.DomNodeCompon, dojo.body());
+//zen.body = createNew(zen.DomNodeCompon, dojo.body());

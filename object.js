@@ -65,3 +65,7 @@ function createNew() {
 	return object;
     };
 };
+
+if (!zen) {
+    zen = createNew(Object);
+};

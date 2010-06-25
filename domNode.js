@@ -1,9 +1,8 @@
 dojo.provide("zen.domNode");
+dojo.require("zen.component");
 
-
-if (typeof zen == "undefined") {
-    var zen = {};
-};
+//FIXME: Move all dojo.require calls here, after checking that every
+//function herein needs them.
 
 
 ////
@@ -22,6 +21,8 @@ zen.DomNodeCompon = function(element) {
 	parent.appendChild(this);
     };
     this.appendChild = function (child) {
+	//console.dir(child);
+	//console.debug("zen.DomNodeCompon: this.appendChild(" + child + ")");
 	this.domNode.appendChild(child.getDomNode());
 	this.children.push(child);
     };
@@ -139,3 +140,15 @@ zen.createTextNode = function(text, attributes) {
     domNodeCompon.domNode = domNode;
     return domNodeCompon;
 };
+
+zen.rulesTable.addRule(
+    {createElement : [ "div", "table", "tr", "td",
+		       "p", "span", "center", "br" ]});
+zen.rulesTable.addRule({createTextNode: [ "text" ]});
+zen.invertedRulesTable.init();
+zen.body = createNew(zen.DomNodeCompon, dojo.body());
+zen.shortcutsTable.addShortcut(
+    {createElement  : zen.createElement});
+zen.shortcutsTable.addShortcut(
+    {createTextNode : zen.createTextNode}); //FIXME: document.createTextNode?
+

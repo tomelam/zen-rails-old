@@ -51,6 +51,8 @@ tests.register("zen.tests.domNode", [
 		{style:{width:"100px",height:"50px",backgroundColor:"blue"}});
 	    doh.assertNotEqual("undefined", compon);
 	    doh.assertNotEqual("[object HTMLUnknownElement]", compon.domNode);
+	    doh.assertNotEqual("[object HTMLUnknownElement]",
+			       compon.getDomNode());
 	    doh.assertEqual(100, dojo.style(compon.domNode,"width"), 100);
 	    doh.assertEqual(50, dojo.style(compon.domNode,"height"), 50);
 	    var color = new dojo.Color(

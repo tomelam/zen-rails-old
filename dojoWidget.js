@@ -1,4 +1,5 @@
 dojo.provide("zen.dojoWidget");
+dojo.require("zen.component");
 
 
 ////
@@ -44,6 +45,7 @@ zen.createDojoWidget = function(klass, initParms, rootNode) {
 	  initParms.id + ", klass => " + klass);
 	};
     };
+    //console.debug("zen.createDojoWidget: ");
     widget = createNew(zen.rule2ref(klass), initParms, node);
     if (!widget) {
 	throw new Error("Exception: zen.createDojoWidget: creation failed");
@@ -72,7 +74,8 @@ zen.createDojoWidget = function(klass, initParms, rootNode) {
 	    return widget.addChild(child);        // child is Dojo widget
 	} else {
 	    widget.children = [child];
-	    return widget.setContent(child.domNode); // child isn't Dojo widget
+	    //return widget.setContent(child.domNode); // child isn't Dojo widget
+	    return widget.attr("content", child.domNode);
 	};
     };
     widget.destroyCompon = function() {
@@ -85,3 +88,16 @@ zen.createDojoWidget = function(klass, initParms, rootNode) {
     };
     return widget;
 };
+
+zen.rulesTable.addRule({
+    createDijit   : [ "dijit.layout.ContentPane",
+		      "dijit.layout.BorderContainer",
+		      "dijit.layout.AccordionContainer",
+		      "dijit.layout.AccordionPane", //FIXME: deprecated
+		      "dijit.DialogUnderlay",
+		      "dijit.form.Button",
+		      "dojox.layout.FloatingPane" //FIXME: deprecated
+		    ]});
+zen.invertedRulesTable.init();
+zen.shortcutsTable.addShortcut(
+    {createDijit    : zen.createDojoWidget});

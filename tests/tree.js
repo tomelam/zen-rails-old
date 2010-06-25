@@ -1,12 +1,5 @@
 dojo.provide("zen.tests.tree");
-dojo.require("zen.component");
-dojo.require("zen.dojoWidget");
 dojo.require("zen.tree");
-
-
-if (typeof zen == "undefined") {
-    var zen = {};
-};
 
 
 // Test Zen object creation.
@@ -15,14 +8,12 @@ tests.register("zen.tests.tree", [
     {
 	name: "1. Create a DIV HTML element with width, height, colour, & id",
 	setUp: function() {
-	    dojo.require("zen.component");
-	    dojo.require("zen.tree");   
+	    dojo.require("zen.domNode");
 	},
 	runTest: function() {
 	    var treeSpec =
 	    ["div", {style:{width:"180px",height:"180px",backgroundColor:"red"},
 		     id:"workingNode1",title:"Title"}, []];
-	    dojo.require("zen.component");
 	    var tree = zen.createTree(treeSpec);
 	    doh.assertNotEqual(tree, "undefined");
 	}
@@ -31,8 +22,7 @@ tests.register("zen.tests.tree", [
 	name:
 	"2. Create a DIV with id, style, & title within a DIV with id & style",
 	setUp: function() {
-	    dojo.require("zen.component");
-	    dojo.require("zen.tree");   
+	    dojo.require("zen.domNode");
 	},
 	runTest: function() {
 	    var treeSpec =
@@ -43,7 +33,6 @@ tests.register("zen.tests.tree", [
 			   style:{width:"180px",height:"180px",
 				  backgroundColor:"orange"},
 			   title:"Title 1"}, []]]];
-	    dojo.require("zen.component");
 	    var tree = zen.createTree(treeSpec);
 	    doh.assertNotEqual(tree, "undefined");
 	}
@@ -52,8 +41,7 @@ tests.register("zen.tests.tree", [
 	name:
 	"3. Create a DIV containing a DIV with a TABLE and P (containing ...)",
 	setUp: function() {
-	    dojo.require("zen.component");
-	    dojo.require("zen.tree");   
+	    dojo.require("zen.domNode");
 	},
 	runTest: function() {
 	    var treeSpec =
@@ -78,32 +66,75 @@ tests.register("zen.tests.tree", [
 		      ["td", {style:{width:"50px"}}, []]]]]],
 		  ["p", {}, [["span", {}, [["div", {}, []], ["div", {}, []]]],
 			     ["div", {}, []]]]]];
-	    dojo.require("zen.component");
 	    var tree = zen.createTree(treeSpec);
 	    doh.assertNotEqual(tree, "undefined");
 	}
     },
     {
 	name:
-	"4. Create a DIV containing a P and an orange ContentPane",
+	"4. Create a ContentPane",
 	setUp: function() {
-	    dojo.require("zen.component");
-	    dojo.require("zen.dojoWidget");   
-	    dojo.require("zen.tree");
+	    dojo.require("zen.dojoWidget");
 	},
 	runTest: function() {
 	    var treeSpec =
 		["dijit.layout.ContentPane",
 		 {},
 		 []];
-	    dojo.require("zen.component");
-	    dojo.require("zen.dojoWidget");
-	    dojo.require("zen.tree");
-	    var tree = zen.createTree(treeSpec);
-	    zen.body.appendChild(tree);
-	    doh.assertNotEqual(tree, "undefined");
+	    var topCompon = zen.createTree(treeSpec).rootCompon;
+	    zen.body.appendChild(topCompon);
+	    doh.assertNotEqual(topCompon, "undefined");
 	    var innerDiv = dojo.query("#workingNode4");
-	    console.dir(innerDiv);
+	    //console.dir(innerDiv);
+	    doh.assertNotEqual(innerDiv, "undefined");
+	}
+    },
+    {
+	name:
+	"5. Create a DIV containing a P and an orange ContentPane",
+	setUp: function() {
+	    dojo.require("zen.domNode");
+	    dojo.require("zen.dojoWidget");
+	},
+	runTest: function() {
+	    var treeSpec =
+		["div", {id:"workingNode4"},
+		 [["p", {}, []],
+		  ["dijit.layout.ContentPane",
+		   {style:{width:"300px",height:"300px",
+			   backgroundColor:"orange"}},
+		   []]]];
+	    var topCompon = zen.createTree(treeSpec).rootCompon;
+	    zen.body.appendChild(topCompon);
+	    doh.assertNotEqual(topCompon, "undefined");
+	    var innerDiv = dojo.query("#workingNode4");
+	    //console.dir(innerDiv);
+	    doh.assertNotEqual(innerDiv, "undefined");
+	}
+    },
+    {
+	// TODO: Test the adding of a style (here, "box").
+	name:
+	"6. Create a 7-level tree with DIVs, ContentPanes, and a P",
+	setUp: function() {
+	    dojo.require("zen.domNode");
+	    dojo.require("zen.dojoWidget");
+	},
+	runTest: function() {
+	    var treeSpec =
+		["div", {id:"workingNode6"},
+		 [["p", {}, []],
+		  ["dijit.layout.ContentPane",
+		   {style:{width:"300px",height:"140px",backgroundColor:"red"}},
+		   [["div", {},
+		     [["dijit.layout.ContentPane",
+		       {"class":"box"},
+		       [["div", {}, []]]]]]]]]];
+	    var topCompon = zen.createTree(treeSpec).rootCompon;
+	    zen.body.appendChild(topCompon);
+	    doh.assertNotEqual(topCompon, "undefined");
+	    var innerDiv = dojo.query("#workingNode4");
+	    //console.dir(innerDiv);
 	    doh.assertNotEqual(innerDiv, "undefined");
 	}
     }
