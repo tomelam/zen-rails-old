@@ -1,5 +1,5 @@
 dojo.provide("zen.domNode");
-dojo.require("zen.component");
+dojo.require("zen.rulesDB");
 
 //FIXME: Move all dojo.require calls here, after checking that every
 //function herein needs them.

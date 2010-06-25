@@ -1,4 +1,4 @@
-dojo.provide("zen.component");
+dojo.provide("zen.rulesDB");
 dojo.require("zen.object");
 //dojo.require("zen.domNode"); //FIXME: Find out why not inside createCompon.
 //dojo.require("zen.dojoWidget");

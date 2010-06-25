@@ -1,5 +1,5 @@
 dojo.provide("zen.dojoWidget");
-dojo.require("zen.component");
+dojo.require("zen.rulesDB");
 
 
 ////

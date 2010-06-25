@@ -1,9 +1,9 @@
-dojo.provide("zen.tests.component");
+dojo.provide("zen.tests.rulesDB");
 
 
 // Test Zen generic-component creation.
 
-tests.register("zen.tests.component", [
+tests.register("zen.tests.rulesDB", [
     {
 	name:
 	"1. Get a reference to an element constructor, given a shortcut name",
