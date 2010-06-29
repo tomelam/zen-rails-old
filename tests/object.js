@@ -63,5 +63,43 @@ tests.register("zen.tests.object", [
 	runTest: function() {
 	    doh.assertEqual(foo4.publicVar, 4);
 	}
+    },
+    {
+	name: "5. Create a Zen Set",
+	setUp: function() {
+	    dojo.require("zen.object");
+	},
+	runTest: function() {
+	    var mySet = createNew(zen.Set);
+	    doh.assertNotEqual(null, mySet);
+	    doh.assertEqual("function", (typeof mySet.add));
+	    doh.assertEqual("function", (typeof mySet.remove));
+	    doh.assertEqual("object", (typeof mySet.registry));
+	    doh.assertNotEqual("undefined", mySet.registry.length);
+	}
+    },
+    {
+	name: "6. Add an object to a Zen Set",
+	setUp: function() {
+	    dojo.require("zen.object");
+	},
+	runTest: function() {
+	    var mySet = createNew(zen.Set);
+	    mySet.add(1);
+	    doh.assertEqual(mySet.registry[0], 1);
+	    doh.assertEqual(mySet.registry.length, 1);
+	}
+    },
+    {
+	name: "7. Add and remove an object to a Zen Set",
+	setUp: function() {
+	    dojo.require("zen.object");
+	},
+	runTest: function() {
+	    var mySet = createNew(zen.Set);
+	    mySet.add(1);
+	    mySet.remove(1);
+	    doh.assertEqual(0, mySet.registry.length);
+	}
     }
 ]);

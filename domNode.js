@@ -1,35 +1,81 @@
 dojo.provide("zen.domNode");
+dojo.require("zen.object");
 dojo.require("zen.rulesDB");
 
-//FIXME: Move all dojo.require calls here, after checking that every
-//function herein needs them.
 ////
 //// DOM NODE HANDLING
 ////
 
+// FIXME:
+//
+// Consider creating a Dojo widget for *every* DOM node.
+//
+// FIXME:
+//
+// A DomNodeCompon can be created as 'new zen.DomNodeCompon(element)'
+// or 'createNew(zen.DomNodeCompon(element))', where 'element' is a
+// DOM node reference.
+//
+// A DomNodeCompon can also be created as
+// 'zen.createElement(kind, attributes)'.
+//
+// Wouldn't it be nice to simply combine these 2 methods of creating a
+// DomNodeCompon? Either an argument count (being careful to allow a
+// DomNodeCompon to be created with its domNode unset, in case this
+// becomes useful someday) or a type check on the first argument
+// (check for a function). Check to see whether the resulting
+// interface (using createNew instead of zen.createElement) could be
+// combined with the rules in rulesDB.js.
+
+// NOTES on the tracking of components:
+//
+// 1. When a component is created, it must be registered so that it
+// can be operated upon later (destroyed, or located via DOM node
+// reference, etc.). Since JavaScript does not support a reference to
+// an object being used as a property name, the DOM node cannot be
+// used as a key to look up the DomNodeCompon. A unique id could be
+// given to every DOM node so that any DOM node's id could be used to
+// look up the DomNodeCompon, but we will use a simple array instead
+// and search the array for the node's containing DomNodeCompon
+// object. See dojo/dijit/_base/manager.js for ideas.
+//
+// 2. When a component is destroyed, first its children must be
+// destroyed.
+//
+// 3. When a component is destroyed, its registration must be
+// cancelled.  Since a reference to a JavaScript object cannot be used
+// as a JavaScript property name, the component has to be found by a
+// brute force search.
+
 zen.DomNodeCompon = function(element) {
     this.domNode = element;
+    this.parent = null;
     this.stringRep = "[zen.DomNodeCompon " + this.domNode + "]";
-    this.children = [];
+    this.children = createNew(zen.Set);
     this.toString = function () { // Without this, we get '[object Object]'.
 	return "[zen.DomNodeCompon " +
 	    String(this.domNode).replace(/^\[object /,"").replace(/\]$/,"") +
 	    "]";
     };
-    this.appendMyselfToParent = function (parent) {
-	parent.appendChild(this);
-    };
+    // FIXME: Consider dojo.html.set.
     this.appendChild = function (child) {
 	//console.dir(child);
 	//console.debug("zen.DomNodeCompon: this.appendChild(" + child + ")");
 	this.domNode.appendChild(child.getDomNode());
-	this.children.push(child);
+	this.children.add(child);
+	//console.group("appendChild: this.children");
+	//console.dir(this.children);
+	//console.groupEnd();
+    };
+    this.appendMyselfToParent = function (parent) {
+	parent.appendChild(this);
+	this.parent = parent;
     };
     this.getDomNode = function () {
 	return this.domNode;
     };
     this.getChildCompons = function () { //FIXME: WORKING ON THIS: WAS BROKEN!
-	return this.children;
+	return this.children.registry;
 	var domNode = this.domNode;
 	return dojo.map(domNode.children,
 			function(c) {
@@ -38,69 +84,43 @@ zen.DomNodeCompon = function(element) {
 				zen.DomNodeCompon.fromDomNode(c);
 			});
     };
-    this.destroyCompon = function() {
-	var compon, index, lengthBefore, lengthAfter;
+    this.destroyCompon = function () {
 	dojo.forEach(this.getChildCompons(),
-		     function(child) {
-			 child.destroyCompon();
-		     });
-	dojo.destroy(this.domNode);
-	index = zen.DomNodeCompon.allDomNodeCompons.indexOf(this);
-	if (index < 0) {
-	    console.group("Looking for " + this + " in list");
-	    console.dir(this);
-	    console.groupEnd();
-	    throw new Error("Exception: couldn't find DomNodeCompon in list.");
-	} else {
-	    if (index == (zen.DomNodeCompon.allDomNodeCompons.length - 1)) {
-		lengthBefore = zen.DomNodeCompon.allDomNodeCompons.length;
- 		//delete zen.DomNodeCompon.allDomNodeCompons[index];
-		zen.DomNodeCompon.allDomNodeCompons.pop();
-		lengthAfter = zen.DomNodeCompon.allDomNodeCompons.length;
-		if (lengthBefore == lengthAfter) {
-		    throw new Error("Exception! Length should reduce.");
-		};
-	    } else {
-		lengthBefore = zen.DomNodeCompon.allDomNodeCompons.length;
- 		delete zen.DomNodeCompon.allDomNodeCompons[index];
-		lengthAfter = zen.DomNodeCompon.allDomNodeCompons.length;
- 		zen.DomNodeCompon.allDomNodeCompons[index] =
-		    zen.DomNodeCompon.allDomNodeCompons.pop();
-		lengthAfter = zen.DomNodeCompon.allDomNodeCompons.length;
-		if (lengthBefore == lengthAfter) {
-		    throw new Error("Exception! Length should reduce.");
-		};
-	    };
-	};
+		     function(child) { child.destroyCompon(); });
+	//console.group("destroyCompon: this.parent");
+	//console.dir(this.parent);
+	//console.groupEnd();
+	this.parent.children.remove(this);
+	dojo.destroy(this.getDomNode());
     };
-    zen.DomNodeCompon.allDomNodeCompons.push(this);
-    index = zen.DomNodeCompon.allDomNodeCompons.indexOf(this);
+    zen.DomNodeCompon.fullSet.add(this);
+    //console.group("zen.DomNodeCompon: zen.DomNodeCompon.fullSet");
+    //console.dir(zen.DomNodeCompon.fullSet);
+    //console.groupEnd();
 };
 
 // Singletons.
-zen.DomNodeCompon.allDomNodeCompons = [];
+zen.DomNodeCompon.fullSet = createNew(zen.Set);
 zen.DomNodeCompon.fromDomNode = function (node) {
     var index = 0, compon, len;
-    var allDomNodeCompons;
-    /*
-    allDomNodeCompons = canvas.rootCompons.domNodeCompons.concat(
-	toolbars.rootCompons.domNodeCompons);
-    */
-    allDomNodeCompons = zen.DomNodeCompon.allDomNodeCompons;
-    len = allDomNodeCompons.length;
+    var registry;
+    registry = zen.DomNodeCompon.fullSet.registry;
+    len = registry.length;
     for (index; index<len; index++) {
-	compon = allDomNodeCompons[index];
+	compon = registry[index];
 	if (compon.domNode == node) {
 	    return compon;
 	};
     };
     return null;
 };
+zen.DomNodeCompon.byId = function (id) {
+    return zen.DomNodeCompon.fromDomNode(dojo.byId(id));
+};
 
 //FIXME: compon.toString() prints "[object HTMLSpanElement]" for the
 //CENTER element.
 zen.createElement = function(kind, attributes) {
-    dojo.require("zen.object");
     var domNodeCompon = createNew(zen.DomNodeCompon);
     if (attributes && attributes.id) {
 	/*FIXME: Revisit this. Currently it would cause a test to fail
@@ -113,15 +133,18 @@ zen.createElement = function(kind, attributes) {
 	};
         */
 	if (dojo.byId(attributes.id) != null) {
+	zen.DomNodeCompon.fullSet.remove(domNodeCompon);
 	throw new Error(
 	"Exception: zen.createElement: HTML element already exists w/ id => "+
 	attributes.id + ", kind => " + kind);
 	};
     };
-    // FIXME: Use dojo.create.
+    // FIXME: Use dojo.create. Note that attributes can be set with it.
+    // FIXME: Consider dojo.html.set -- maybe not here, but somewhere
+    // (appendMyselfToParent?).
     var domNode = document.createElement(kind);
     dojo.attr(domNode, attributes || {}); //FIXME: Check this.
-    domNodeCompon.domNode = domNode;
+    domNodeCompon.domNode = domNode; //FIXME: Maybe should use a setter.
     return domNodeCompon;
 };
 
@@ -132,7 +155,6 @@ zen.createElement = function(kind, attributes) {
 //
 // FIXME: Can text nodes have attributes?
 zen.createTextNode = function(text, attributes) {
-    dojo.require("zen.object");
     var domNodeCompon = createNew(zen.DomNodeCompon);
     // FIXME: Use dojo.create, if appropriate.
     var domNode = document.createTextNode(text);

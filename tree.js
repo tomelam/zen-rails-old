@@ -43,7 +43,6 @@ zen.renderTree = function(treeSpec, parent) {
 };
 
 var recursion = 0;
-//var transitoryTrees = createNew(zen.Tree);
 zen.createTree = function(treeSpec) {
     //console.debug("zen.createCompon([" + dojo.toJson(treeSpec[0]) + ", " +
     //		  dojo.toJson(treeSpec[1]) + "])");

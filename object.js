@@ -69,3 +69,29 @@ function createNew() {
 if (!zen) {
     zen = createNew(Object);
 };
+
+zen.Set = function () {
+    this.registry = [];
+    this.add = function(obj) {
+	if (this.registry.indexOf(obj) < 0) {
+	    this.registry.push(obj);
+	} else {
+	    throw new Error(
+		"Exception: object already in list.");
+	};
+    };
+    this.remove = function(obj) {
+	var index = this.registry.indexOf(obj),
+	    lastObj;
+	if (index < 0) {
+	    throw new Error(
+		"Exception: couldn't find object in list.");
+	} else {
+	    lastObj = this.registry.pop();
+	    if (index != this.registry.length) {
+		delete this.registry[index];
+		this.registry[index] = lastObj;
+	    };
+	};
+    };
+};
