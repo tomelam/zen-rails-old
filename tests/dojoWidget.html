@@ -221,7 +221,8 @@
 		  }
 	      },
 	      {
-		  name: "11. Create",
+		  name:
+		  "11. Create AccordionContainer with 3 ContentPanes w/o Zen",
 		  runTest: function(t){
 		      accordion = new dijit.layout.AccordionContainer(
 			  {style: "width: 400px; height: 400px;"},
@@ -247,7 +248,7 @@
 		  }
 	      },
 	      {
-		  name: "initially open pane",
+		  name: "12. The 2nd pane is the only one initially open",
 		  runTest: function(t){
 		      // Pane 2 is initially open
 		      var openPanes = dojo.query("> .dijitVisible",
@@ -263,7 +264,7 @@
 		  }
 	      },
 	      {
-		  name: "addChild at end",
+		  name: "13. Add a pane at the end of the list of child panes",
 		  runTest: function(t){
 		      pane4 = new dijit.layout.ContentPane(
 			  {title: "pane 4", content: "this is pane 4"});
@@ -282,7 +283,7 @@
 		  }
 	      },
 	      {
-		  name: "addChild after pane 1",
+		  name: "14. Add a child after the 1st pane",
 		  runTest: function(t){
 		      pane1half = new dijit.layout.ContentPane(
 			  {id: "pane1half", title: "pane 1.5",
@@ -302,7 +303,7 @@
 		  }
 	      },
 	      {
-		  name: "removeChild(pane 1.5)",
+		  name: "15. Find a child pane by id string and remove it",
 		  runTest: function(t){
 		      accordion.removeChild(dijit.byId('pane1half'));
 		      
@@ -319,7 +320,7 @@
 		  }
 	      },
 	      {
-		  name: "initially open pane (checking again)",
+		  name: "16. Still 1 open pane and all the rest closed",
 		  runTest: function(t){
 		      // Pane 2 is initially open
 		      var openPanes = dojo.query("> .dijitVisible",
@@ -335,7 +336,7 @@
 		  }
 	      },
 	      {
-		  name: "select new pane",
+		  name: "17. Select a new pane",
 		  timeout: 3000,
 		  setUp: function(t){
 		      // Note that this kicks off an animation so it
@@ -362,8 +363,7 @@
 			      var closedPanes = dojo.query(
 				  "> .dijitHidden", accordion.containerNode);
 			      t.is(3, closedPanes.length, "n-1 closed panes");
-			  })
-				 , 300);
+			  }) , 300);
 		      return d;
 		  }
 	      }
