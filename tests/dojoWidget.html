@@ -3,6 +3,10 @@
 <html>
 <head>
   <title>Accordion Widget Demo</title>
+
+  <!-- NOTE: The tests creating and using an AccordionPane are
+       modelled after
+       .../dojo/dijit/tess/layout/AccordionContainer.html . -->
   
   <!-- only needed for test files: -->
   <style type="text/css">
@@ -35,6 +39,7 @@
       dojo.addOnLoad(function(){doh.register(
 	  "basic",
 	  [
+	      /*
 	      {
 		  name: "1. Define zen.dojoWidget.startup",
 		  setUp: function() {
@@ -74,6 +79,8 @@
 		      doh.assertNotEqual("undefined", compon);
 		      doh.assertEqual("[object HTMLDivElement]",
 				      compon.getDomNode());
+
+
 		      doh.assertEqual(40, dojo.style(compon.domNode,"width"));
 		      doh.assertEqual(50, dojo.style(compon.domNode,"height"));
 		  }
@@ -99,6 +106,8 @@
 	      {
 		  name: "5. Create a dijit.layout.AccordionContainer",
 		  setUp: function() {
+
+
 		      dojo.registerModulePath("zen", "../../../zen");
 		      dojo.require("zen.dojoWidget");
 		  },
@@ -220,33 +229,67 @@
 		      doh.assertEqual(null, compon);
 		  }
 	      },
+	      */
 	      {
 		  name:
-		  "11. Create AccordionContainer with 3 ContentPanes w/o Zen",
+		  "11. Create AccordionContainer with 3 ContentPanes",
+		  setUp: function() {
+		      dojo.registerModulePath("zen", "../../../zen");
+		      dojo.require("zen.domNode");
+		      dojo.require("zen.dojoWidget");
+		  },
 		  runTest: function(t){
-		      accordion = new dijit.layout.AccordionContainer(
+		      var accordionShell = createNew(
+			  zen.DomNodeCompon, "accordionShell");
+		      accordionCompon = zen.createDojoWidget(
+			  "dijit.layout.AccordionContainer",
 			  {style: "width: 400px; height: 400px;"},
-			  dojo.byId("accordionShell"));
+			  accordionShell);
+		      //accordion = accordionCompon.getDomNode();
+		      /*
 		      dojo.forEach([ "pane 1", "pane 2", "pane 3" ],
 				   function(title, i){
 				       var content =
+					   createnew(
+					       "dijit.layout.ContentPane",
 					   new dijit.layout.ContentPane(
 					       {id: title, title: title,
 						selected: i==1});
 			  content.containerNode.innerHTML = "this is " + title;
 			  accordion.addChild(content);
 		      });
-		      accordion.startup();
+		      */
+		      dojo.forEach(
+			  [ "pane 1", "pane 2", "pane 3" ],
+			  function(title, i){
+			      contentX =
+				  zen.createDojoWidget(
+				      "dijit.layout.ContentPane",
+				      {id: title, title: title,
+				       selected: i==1});
+			      //contentX = dijit.byId(contentCompon.getDomNode());
+			      //console.group("contentX");
+			      //console.dir(contentCompon);
+			      //console.dir(contentX);
+			      //console.groupEnd();
+			      contentX.containerNode.innerHTML =
+				  "this is " + title;
+			      //accordionCompon.appendChild();
+			      //accordion.addChild(contentX);
+			      accordionCompon.addChild(contentX);
+		      });
+		      zen.dojoWidget.startup(zen.dojoWidget.fullSet.toArray());
 		      var titles = dojo.query(".dijitAccordionText",
-					      accordion.domNode);
+					      accordionCompon.domNode);
 		      t.is(3, titles.length, "number of titles");
 		      t.is("pane 3", titles[2].innerHTML);
 		      
-		      var children = accordion.getChildren();
+		      var children = accordionCompon.getChildren();
 		      t.is(3, children.length,
 			   "number of children (ie, contentpanes)");
 		  }
 	      },
+	      /*
 	      {
 		  name: "12. The 2nd pane is the only one initially open",
 		  runTest: function(t){
@@ -367,6 +410,7 @@
 		      return d;
 		  }
 	      }
+	      */
 	  ]);
           doh.run();
       });

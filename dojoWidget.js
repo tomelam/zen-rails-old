@@ -11,6 +11,9 @@ dojo.require("zen.rulesDB");
 // from which all Dojo, Dijit, and Dojox widgets inherit -- or to each
 // widget class separately -- than to add methods separately to each
 // class instance.
+//
+// FIXME: Change 'DojoWidget' to 'DojoCompon' because every Zen type
+// should be a 'Compon' and because every Dojo compon is a widget.
 
 zen.dojoWidget = {};
 
