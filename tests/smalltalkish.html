@@ -1,0 +1,149 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>Tests of a Smalltalkish DOM</title>
+    
+    <!-- NOTE: The Smalltalkish message-passing here is modelled after
+         the message-passing style shown in Section 2.1 of _Structure
+         and Interpretation of Computer Programs_, 2nd Ed. -->
+
+    <!-- required: the default dijit theme: -->
+    <link id="themeStyles" rel="stylesheet"
+	  href="../dojo/dijit/themes/tundra/tundra.css">
+      
+    <script type="text/javascript" src="../smalltalkish.js"></script>
+    <!-- required: dojo.js -->
+    <script type="text/javascript" src="../dojo/dojo/dojo.js"
+	    djConfig="isDebug: true, parseOnLoad: true"></script>
+    
+    <script type="text/javascript">
+      dojo.require("doh.runner");
+      
+      dojo.addOnLoad(function(){doh.register(
+	  "basic",
+	  [
+	      {
+		  name: "1. Lightweight Smalltalkish 'object'",
+		  setUp: function() {
+		      //// An example of how to create lightweight objects.
+		      cons = function(x, y) {
+			  return function(m) {
+			      if (m == 0) {
+				  return x;
+			      } else if (m == 1) {
+				  return y;
+			      } else {
+				  throw new Error(
+				      "Message not understood: " + m);
+			      };
+			  };
+		      };
+		      car = function(z) { return z(0); };
+		      cdr = function(z) { return z(1); };
+		      foo = cons(3, 4);
+		  },
+		  runTest: function() {
+		      doh.assertEqual(foo(0), 3);
+		      doh.assertEqual(foo(1), 4);
+		      doh.assertEqual(car(foo), 3);
+		      doh.assertEqual(cdr(foo), 4);
+		      //FIXME: There is something like doh.assertError. Use it.
+		      try {
+			  foo(2);
+			  doh.t(); // If foo(2) succeeded, force an error here.
+		      } catch(e) {
+		      };
+		  }
+	      },
+	      {
+		  name: "2. Smalltalkish object to encapsulate Zen",
+		  runTest: function() {
+		      doh.assertEqual("undefined", typeof zen, "zen undefined");
+		      zen = makeZen();
+		      doh.assertNotEqual(
+			  "undefined", typeof zen, "zen defined");
+		      doh.assertNotEqual(null, zen, "zen not null");
+		      zen.body = makeNode();
+		      doh.assertNotEqual(
+			  "undefined", typeof zen.body, "zen.body defined");
+		      doh.assertNotEqual(null, zen.body, "zen.body not null");
+		  }
+	      },
+	      {
+		  name: "3. Sane DOM environment",
+		  runTest: function() {
+		      filter = function(testNode) {
+			  if (testNode.nodeType == 1) {
+			      alert(testNode);
+			  };
+		      };
+		      doh.assertNotEqual(
+			  "undefined", typeof document, "document defined");
+		      doh.assertNotEqual(
+			  null, document, "document not null");
+		      doh.assertNotEqual(
+			  "undefined", typeof document.body,
+			  "document.body defined");
+		      doh.assertNotEqual(
+			  null, document.body, "document.body not null");
+		      doh.assertNotEqual(
+			  "undefined", typeof document.getElementById,
+			  "document.getElementById defined");
+		      doh.assertNotEqual(
+			  null, document.getElementById,
+			  "document.getElementById, not null");
+		      doh.assertNotEqual(
+			  null, dojo.byId("div1"),
+			  "can find element with id 'div1'");
+		      doh.assertNotEqual(
+			  null, dojo.byId("div1"),
+			  "can find element with id 'div1' in present document"
+		      );
+		  }
+	      },
+	      {
+		  name: "4. Smalltalkish object storing document.body ref",
+		  runTest: function() {
+		      setDomNode(zen.body, document.body);
+		      doh.assertEqual(
+			  document.body, printDomNode(zen.body),
+			  "Smalltalkish object contains document.body");
+		  }
+	      },
+	      {
+		  name: "5. Smalltalkish interface for random node",
+		  runTest: function() {
+		      var stNode1 = makeNode();
+		      setDomNode(stNode1, dojo.byId("div1"));
+		      doh.assertNotEqual(
+			  "undefined", typeof stNode1,
+			  "Smalltalkish object for 'div1' node is defined");
+		      doh.assertNotEqual(
+			  "undefined", typeof printDomNode(stNode1),
+			  "Smalltalkish object contains node with id 'div1'");
+		      doh.assertNotEqual(
+			  null, printDomNode(stNode1),
+			  "contained node is not null");
+		      var stNode2 = doc.createElement("div");
+		      doh.assertNotEqual(
+			  "undefined", typeof stNode2,
+			  "Smalltalkish object for new node is defined");
+		      doh.assertNotEqual(
+			  null, stNode2,
+			  "Smalltalkish object for new node is not null");
+		      appendChild(zen.body, stNode2);
+		  }
+	      }
+	  ]);
+          doh.run();
+      });
+  </script>
+</head>
+<body class="tundra" style="padding: 50px;">
+  
+  <h1 class="testTitle">Smalltalkish Tests</h1>
+  
+  <div id="div1" style="width:100px; height:50px; backgroundColor:blue;"></div>
+</body>
+</html>

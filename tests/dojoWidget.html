@@ -1,36 +1,37 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-  <title>Accordion Widget Demo</title>
-
-  <!-- NOTE: The tests creating and using an AccordionPane are
-       modelled after
-       .../dojo/dijit/tess/layout/AccordionContainer.html . -->
-  
-  <!-- only needed for test files: -->
-  <style type="text/css">
-    @import "../dojo/dojo/resources/dojo.css";
-    @import "../dojo/dijit/tests/css/dijitTests.css";
-  </style>
-  
-  <!-- required: the default dijit theme: -->
-  <link id="themeStyles" rel="stylesheet"
-	href="../dojo/dijit/themes/tundra/tundra.css">
+  <head>
+    <title>Dojo Accordion Widget Tests</title>
     
-  <!-- required: dojo.js -->
-  <script type="text/javascript" src="../dojo/dojo/dojo.js"
-	  djConfig="isDebug: true, parseOnLoad: true"></script>
-  
-  <!-- only needed for alternate theme testing: -->
-  <script type="text/javascript"
-	  src="../dojo/dijit/tests/_testCommon.js"></script>
-  
-  <script type="text/javascript">
-    dojo.require("doh.runner");
-    dojo.require("dijit.dijit"); // optimize: load dijit layer
-    dojo.require("dijit.layout.AccordionContainer");
-    dojo.require("dijit.layout.ContentPane");
+    <!-- NOTE: The tests creating and using an AccordionPane are
+	 modelled after
+	 .../dojo/dijit/tess/layout/AccordionContainer.html . -->
+    
+    <!-- only needed for test files: -->
+    <style type="text/css">
+      @import "../dojo/dojo/resources/dojo.css";
+      @import "../dojo/dijit/tests/css/dijitTests.css";
+    </style>
+    
+    <!-- required: the default dijit theme: -->
+    <link id="themeStyles" rel="stylesheet"
+	  href="../dojo/dijit/themes/tundra/tundra.css">
+      
+      <script type="text/javascript" src="../smalltalkish.js"></script>
+      <!-- required: dojo.js -->
+      <script type="text/javascript" src="../dojo/dojo/dojo.js"
+	      djConfig="isDebug: true, parseOnLoad: true"></script>
+      
+      <!-- only needed for alternate theme testing: -->
+      <script type="text/javascript"
+	      src="../dojo/dijit/tests/_testCommon.js"></script>
+      
+      <script type="text/javascript">
+	dojo.require("doh.runner");
+	dojo.require("dijit.dijit"); // optimize: load dijit layer
+	dojo.require("dijit.layout.AccordionContainer");
+	dojo.require("dijit.layout.ContentPane");
       
       var accordion, pane4;
       
@@ -40,7 +41,7 @@
 	  "basic",
 	  [
 	      /*
-	      {
+		{
 		  name: "1. Define zen.dojoWidget.startup",
 		  setUp: function() {
 		      dojo.registerModulePath("zen", "../../../zen");
@@ -245,38 +246,18 @@
 			  "dijit.layout.AccordionContainer",
 			  {style: "width: 400px; height: 400px;"},
 			  accordionShell);
-		      //accordion = accordionCompon.getDomNode();
-		      /*
-		      dojo.forEach([ "pane 1", "pane 2", "pane 3" ],
-				   function(title, i){
-				       var content =
-					   createnew(
-					       "dijit.layout.ContentPane",
-					   new dijit.layout.ContentPane(
-					       {id: title, title: title,
-						selected: i==1});
-			  content.containerNode.innerHTML = "this is " + title;
-			  accordion.addChild(content);
-		      });
-		      */
 		      dojo.forEach(
 			  [ "pane 1", "pane 2", "pane 3" ],
 			  function(title, i){
-			      contentX =
+			      contentCompon =
 				  zen.createDojoWidget(
 				      "dijit.layout.ContentPane",
 				      {id: title, title: title,
 				       selected: i==1});
-			      //contentX = dijit.byId(contentCompon.getDomNode());
-			      //console.group("contentX");
-			      //console.dir(contentCompon);
-			      //console.dir(contentX);
-			      //console.groupEnd();
-			      contentX.containerNode.innerHTML =
+			      contentCompon.containerNode.innerHTML =
 				  "this is " + title;
-			      //accordionCompon.appendChild();
-			      //accordion.addChild(contentX);
-			      accordionCompon.addChild(contentX);
+			      contentCompon.appendMyselfToParent(
+				  accordionCompon);
 		      });
 		      zen.dojoWidget.startup(zen.dojoWidget.fullSet.toArray());
 		      var titles = dojo.query(".dijitAccordionText",
@@ -289,36 +270,40 @@
 			   "number of children (ie, contentpanes)");
 		  }
 	      },
-	      /*
 	      {
 		  name: "12. The 2nd pane is the only one initially open",
 		  runTest: function(t){
 		      // Pane 2 is initially open
-		      var openPanes = dojo.query("> .dijitVisible",
-						 accordion.containerNode);
+		      var openPanes = dojo.query(
+			  "> .dijitVisible",
+			  accordionCompon.containerNode);
 		      t.is(1, openPanes.length, "exactly one open pane");
 		      t.is("pane 2", dijit.byNode(openPanes[0]).title,
 			   "pane 2 is initially open");
 		      
 		      // And others are closed
-		      var closedPanes = dojo.query("> .dijitHidden",
-						   accordion.containerNode);
+		      var closedPanes = dojo.query(
+			  "> .dijitHidden",
+			  accordionCompon.containerNode);
 		      t.is(2, closedPanes.length, "n-1 closed panes");
 		  }
 	      },
 	      {
 		  name: "13. Add a pane at the end of the list of child panes",
 		  runTest: function(t){
-		      pane4 = new dijit.layout.ContentPane(
+		      pane4 = zen.createDojoWidget(
+			  "dijit.layout.ContentPane",
 			  {title: "pane 4", content: "this is pane 4"});
-		      accordion.addChild(pane4);
+		      //pane4 = new dijit.layout.ContentPane(
+		      //accordionCompon.addChild(pane4);
+		      accordionCompon.appendChild(pane4);
 		      
 		      var titles = dojo.query(".dijitAccordionText",
-					      accordion.domNode);
+					      accordionCompon.domNode);
 		      t.is(4, titles.length, "number of titles");
 		      t.is("pane 4", titles[3].innerHTML);
 		      
-		      var children = accordion.getChildren();
+		      var children = accordionCompon.getChildren();
 		      t.is(4, children.length,
 			   "number of children (ie, contentpanes)");
 		      t.is(pane4, children[3],
@@ -331,14 +316,14 @@
 		      pane1half = new dijit.layout.ContentPane(
 			  {id: "pane1half", title: "pane 1.5",
 			   content: "this is pane 1.5"});
-		      accordion.addChild(pane1half, 1);
+		      accordionCompon.addChild(pane1half, 1);
 		      
 		      var titles = dojo.query(".dijitAccordionText",
-					      accordion.domNode);
+					      accordionCompon.domNode);
 		      t.is(5, titles.length, "number of titles");
 		      t.is("pane 1.5", titles[1].innerHTML);
 		      
-		      var children = accordion.getChildren();
+		      var children = accordionCompon.getChildren();
 		      t.is(5, children.length,
 			   "number of children (ie, contentpanes)");
 		      t.is(pane1half, children[1],
@@ -348,14 +333,15 @@
 	      {
 		  name: "15. Find a child pane by id string and remove it",
 		  runTest: function(t){
-		      accordion.removeChild(dijit.byId('pane1half'));
+		      accordionCompon.removeChild(dijit.byId('pane1half'));
 		      
 		      var titles = dojo.query(".dijitAccordionText",
-					      accordion.domNode);
+					      accordionCompon.domNode);
 		      t.is(4, titles.length, "number of titles");
 		      t.is("pane 2", titles[1].innerHTML);
 		      
-		      var children = accordion.getChildren();
+		      var children = accordionCompon.getChildren();
+		      //var children = accordionCompon.getChildCompons();
 		      t.is(4, children.length,
 			   "number of children (ie, contentpanes)");
 		      t.is("pane 2", children[1].title,
@@ -367,14 +353,14 @@
 		  runTest: function(t){
 		      // Pane 2 is initially open
 		      var openPanes = dojo.query("> .dijitVisible",
-						 accordion.containerNode);
+						 accordionCompon.containerNode);
 		      t.is(1, openPanes.length, "exactly one open pane");
 		      t.is("pane 2", dijit.byNode(openPanes[0]).title,
 			   "pane 2 is initially open");
 		      
 		      // And others are closed
 		      var closedPanes = dojo.query("> .dijitHidden",
-						   accordion.containerNode);
+						   accordionCompon.containerNode);
 		      t.is(3, closedPanes.length, "n-1 closed panes");
 		  }
 	      },
@@ -386,7 +372,7 @@
 		      // might be a while before the bottom
 		      // setTimeout() fires, likely longer than the
 		      // 300ms specified
-		      accordion.selectChild(dijit.byId('pane 3'));
+		      accordionCompon.selectChild(dijit.byId('pane 3'));
 		  },
 		  runTest: function(t){
 		      // Selecting pane 3 should open it and close pane 1
@@ -395,7 +381,7 @@
 			  function(){
 			      // Pane 3 is now open
 			      var openPanes = dojo.query(
-				  "> .dijitVisible", accordion.containerNode);
+				  "> .dijitVisible", accordionCompon.containerNode);
 			      t.is(1,
 				   openPanes.length, "exactly one open pane");
 			      t.is("pane 3",
@@ -404,13 +390,12 @@
 			      
 			      // And others are closed
 			      var closedPanes = dojo.query(
-				  "> .dijitHidden", accordion.containerNode);
+				  "> .dijitHidden", accordionCompon.containerNode);
 			      t.is(3, closedPanes.length, "n-1 closed panes");
 			  }) , 300);
 		      return d;
 		  }
 	      }
-	      */
 	  ]);
           doh.run();
       });
@@ -424,19 +409,19 @@
   <div id="accordionShell"></div>
   
   <button
-      onclick="accordion.selectChild(pane4);">
+      onclick="accordionCompon.selectChild(pane4);">
     select pane 4
   </button>
   <button
-      onclick="accordion.removeChild(dijit.byId('pane 3'));">
+      onclick="accordionCompon.removeChild(dijit.byId('pane 3'));">
     remove pane 3
   </button>
   <button
-      onclick="accordion.addChild(new dijit.layout.ContentPane({title: 'New pane ' + x++, content: 'Hello world!'}), 2);">
+      onclick="accordionCompon.addChild(new dijit.layout.ContentPane({title: 'New pane ' + x++, content: 'Hello world!'}), 2);">
     Add pane as third child
   </button>
   <button
-      onclick="accordion.addChild(new dijit.layout.ContentPane({title: 'New pane ' + x++, content: 'Hello world!'}));">
+      onclick="accordionCompon.addChild(new dijit.layout.ContentPane({title: 'New pane ' + x++, content: 'Hello world!'}));">
   Add pane at end
   </button>
   

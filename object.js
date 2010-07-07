@@ -2,6 +2,15 @@ if (dojo) {
     dojo.provide("zen.object");
 };
 
+//// Replace the default Object constructor so that light-weight
+//// objects can be built from closures and have a default message
+//// dispatcher.
+//Object = function() {
+//    return function(m) {
+//	console.debug("Message not understood: " + m);
+//    };
+//};
+
 //// Simplification and consolidation of a simulated 'new' operator
 //// as given in Chapter 5 of _JavaScript: The Good Parts_, by
 //// Douglas Crockford. Courtesy of Eric Bréchemier (on

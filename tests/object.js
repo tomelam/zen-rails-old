@@ -91,7 +91,7 @@ tests.register("zen.tests.object", [
 	}
     },
     {
-	name: "7. Add and remove an object to a Zen Set",
+	name: "7. Add an object to and remove it from a Zen Set",
 	setUp: function() {
 	    dojo.require("zen.object");
 	},

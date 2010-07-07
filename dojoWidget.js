@@ -84,7 +84,8 @@ zen.createDojoWidget = function(klass, initParms, rootNode) {
 	} else {
 	    console.debug("Not tested yet?");
 	    if (widget.children.some(function(){return true;})) {
-		throw new Error("Exception: widget already has children.");
+		throw new Error(
+		    "Exception: widget only allowed one non-widget child.");
 	    };
 	    widget.children.add(child);
 	    widget.attr("content", child.domNode); // child not widget
