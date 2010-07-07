@@ -64,10 +64,6 @@
 		      doh.assertNotEqual(
 			  "undefined", typeof zen, "zen defined");
 		      doh.assertNotEqual(null, zen, "zen not null");
-		      zen.body = makeNode();
-		      doh.assertNotEqual(
-			  "undefined", typeof zen.body, "zen.body defined");
-		      doh.assertNotEqual(null, zen.body, "zen.body not null");
 		  }
 	      },
 	      {
@@ -105,7 +101,14 @@
 	      {
 		  name: "4. Smalltalkish object storing document.body ref",
 		  runTest: function() {
+		      //document.body = zen.body; // Error: body is protected.
+		      zen.body = makeNode();
+		      doh.assertNotEqual(
+			  "undefined", typeof zen.body, "zen.body defined");
+		      doh.assertNotEqual(null, zen.body, "zen.body not null");
 		      setDomNode(zen.body, document.body);
+		      //Same as above in one fell swoop:
+		      //zen.body = (makeNode())(4, document.body);
 		      doh.assertEqual(
 			  document.body, printDomNode(zen.body),
 			  "Smalltalkish object contains document.body");

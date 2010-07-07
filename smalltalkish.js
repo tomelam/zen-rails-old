@@ -57,6 +57,9 @@ if (typeof doc != "undefined") {
 // document.getElementById.  If Dojo uses the shortcut 'doc' in place
 // of 'document' everywhere, maybe such a shortcut can be made to work
 // for Dojo.
+//
+//FIXME: Should doc.createElement should be a Smalltalkish object?
+//If it were, interesting things like tracing it could be done.
 doc.createElement = function(type) {
     var stNode = makeNode();
     stNode(0, type);
@@ -87,9 +90,3 @@ if (typeof zen == "undefined") {
     };
     //zen = makeZen();
 };
-//zen.body = makeNode();
-//setDomNode(zen.body, dojo.body);
-
-//document.body = zen.body; // Error, so we can't use body in Smalltalkish.
-
-//zen.body = (makeNode())(4, document.body); // Same in one fell swoop.
